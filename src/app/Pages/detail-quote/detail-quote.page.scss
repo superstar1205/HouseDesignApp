@@ -1,0 +1,223 @@
+.minH3{
+  --min-height: 3px !important;
+}
+.uploadBtn{
+  margin-bottom: 16px;
+  margin-top: 4px;
+  height: 56px;
+}
+.team-div{
+  ion-avatar, p{
+    position: relative;
+    margin: 0 auto;
+    img{
+      width: 100%;
+      object-fit: fill;
+      padding: 25%;
+      border: 1px solid rgb(0,0,0,0.1);
+      // background: var(--ion-color-primary);
+    }
+    img.ng-lazyloaded {
+      object-fit: cover !important;
+      padding: 0 !important;
+    }
+    img.ng-failed-lazyloaded {
+      object-fit: fill !important;
+      padding: 25% !important;
+    }
+  }
+  .floating-call-icon{
+    position: absolute;
+    top: 35px;
+    right: 17px;
+    height: 24px;
+    width: 24px;
+    border: 1px solid;
+    border-radius: 50px;
+    background: var(--ion-color-white);
+  }
+  .floating-trash-icon{
+    position: absolute;
+    top: 0;
+    right: 17px;
+    height: 20px;
+    width: 20px;
+    background: var(--ion-color-primary);
+    --color: var(--ion-color-white);
+  }
+}
+.ios{
+  .floating-call-icon{
+    top: 25px !important;
+    right: 22px !important;
+  }
+  .floating-trash-icon{
+    top: 0 !important;
+    right: 22px !important;
+  }
+}
+.comment-first-item{
+  ion-avatar{
+    height: 20px;
+    width: 20px;
+    margin-inline-end: 6px;
+  }
+  ion-note{
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+  }
+}
+.comment-reply{
+  background: var(--bg-comment-reply) !important;
+  --background: var(--bg-comment-reply) !important;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  border-radius: 5px;
+  padding: 0 8px 8px;
+  ion-item{
+    background: var(--bg-comment-reply) !important;
+    --background: var(--bg-comment-reply) !important;
+  }
+}
+.noLeftPaddingMargin{
+  padding-left: 0;
+  margin-left: 0;
+}
+ion-footer{
+  ion-tab-bar{
+    ion-tab-button, ion-tab-button:hover{
+      max-width: 100%;
+      ion-icon, ion-label, ion-icon:hover, ion-label:hover{
+        color: var(--ion-color-white) !important;
+      }
+    }
+  }
+  .comment-toolbar{
+    --min-height: 48px;
+    ion-item{
+      border-top: 2px solid var(--ion-color-secondary);
+      border-radius: 10px 10px 0 0;
+      padding: 0 0 0 10px;
+      ion-textarea{
+        // line-height: 50px;
+        // height: 50px;
+      }
+    }
+    .error-comment{
+      border-top: 2px solid var(--ion-color-danger);
+      // animation: blink .5s step-end infinite alternate;
+    }
+  }
+}
+
+@keyframes blink {
+  50% { border-top: 2px solid var(--ion-color-danger); }
+}
+.comment-footer:before{
+  background: none !important;
+}
+.schedulesListing {
+  .schedulesLabel:before {
+    height: 100%;
+    width: 1px;
+    background: #ddd;
+    top: 5px;
+    left: 10px;
+    content: '';
+    position: absolute;
+  }
+  .allMarked{
+    h2:before{
+      content: "✔" !important;
+      background: #3fe771 !important;
+      color: white;
+      font-size: 13px;
+      text-align: center;
+    }
+  }
+  .schedulesLabel {
+    padding-left: 25px;
+    position: relative;
+    margin: 0;
+
+    h2:before {
+      position: absolute;
+      left: -23px;
+      top: 0;
+      height: 17px;
+      width: 17px;
+      border-radius: 17px;
+      background: #9AA4B4;
+      content: '';
+    }
+    h2 {
+      position: relative;
+    }
+    .noShadowBtn{
+      margin-bottom: 16px;
+    }
+    .uploadBtn {
+      margin-bottom: 8px;
+    }
+  }
+}
+.reply-div{
+  padding: 3px !important;
+  border-radius: 5px;
+  border: var(--border2);
+  background: var(--border2);
+  ion-item{
+    border-radius: 5px;
+    ion-textarea{
+      line-height: 50px;
+      height: 50px;
+    }
+  }
+}
+.reply-div.error-comment{
+  border: 1px solid var(--ion-color-danger) !important;
+  // animation: blink .5s step-end  alternate;
+}
+ion-content{
+  z-index: 0;
+}
+.RatingStars {
+  --border-radius: 50% !important;
+  --background-hover: rgba(66,66,66,0.08) !important;
+  --background-focused: rgba(66,66,66,0.24) !important;
+  --min-height: 36px !important;
+  --min-width: 36px !important;
+  height: 36px !important;
+  width: 36px !important;
+  margin: 0;
+  --transition: background-color,opacity 100ms linear !important;
+  ion-icon{
+    font-size: 30px;
+  }
+}
+.ViewStars{
+  ion-icon{
+    font-size: 20px;
+  }
+}
+.starC{
+  color: var(--color-starC);
+}
+.starOC{
+  color: var(--color-starOC);
+}
+.innerHtml-wrap p{
+  text-wrap: normal !important;
+}
+.innerHtml-smallText p{
+  font-size: smaller !important;
+}
+ion-infinite-scroll{
+  ion-infinite-scroll-content{
+    min-height: 44px !important;
+  }
+}
+.noShadowBtn{
+  --box-shadow: none !important;
+  letter-spacing: 0 !important;
+}

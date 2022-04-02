@@ -1,0 +1,235 @@
+<app-header headerType="other" [scrollArea]="scrollArea"></app-header>
+<ion-content no-bounce #scrollArea scrollEvents>
+  <ng-container *ngIf="!_USER && !loadingUser">
+    <app-tab-login cssClassMain="ion-padding"></app-tab-login>
+  </ng-container>
+  <ng-container *ngIf="_USER && !UData && !loadingUser">
+    <ion-list class="ion-padding-horizontal" lines="none">
+    <ion-item class="ion-no-padding" lines="none">
+      <ion-thumbnail class="avatarSkeleton" slot="start">
+        <div><ion-skeleton-text animated style="width: 60px; height: 60px; border-radius: 100px;"></ion-skeleton-text></div>
+      </ion-thumbnail>
+      <ion-skeleton-text animated style="width: 100%; height: 60px"></ion-skeleton-text>
+    </ion-item>
+    <ion-row style="padding-top: 8px;">
+      <ion-col>
+        <ion-skeleton-text animated style="height: 40px"></ion-skeleton-text>
+      </ion-col>
+      <ion-col>
+        <ion-skeleton-text animated style=" height: 40px"></ion-skeleton-text>
+      </ion-col>
+      <ion-col>
+        <ion-skeleton-text animated style=" height: 40px"></ion-skeleton-text>
+      </ion-col>
+      <ion-col>
+        <ion-skeleton-text animated style=" height: 40px"></ion-skeleton-text>
+      </ion-col>
+    </ion-row>
+    <ion-item class="ion-no-padding" lines="none" *ngFor="let l of [1,2,3,4,5]">
+      <ion-label color="primary" position="stacked">
+        <ion-skeleton-text animated style="width: 100px; height: 16px"></ion-skeleton-text>
+      </ion-label>
+      <p class="ion-no-margin" style="width: 100%;"><ion-skeleton-text animated style="height: 40px; border-radius: 3px"></ion-skeleton-text></p>
+    </ion-item>
+  </ion-list>
+  </ng-container>
+  <ng-container *ngIf="_USER && UData && !loadingUser">
+    <ion-item *ngIf="personal" class="innerPaddingEnd" lines="full">
+      <ion-avatar slot="start" class="myAvatar">
+        <img alt="user" [src]="helper._IMG.DEFAULT_LOADING" [errorImage]="helper._IMG.DEFAULT_USER" [lazyLoad]="this.personal.profile_img">
+      </ion-avatar>
+      <ion-label class="ion-no-margin">
+        <h2>{{user.firstname}} {{user.lastname}}</h2>
+        <p>{{user.email}}</p>
+        <p class="ion-no-margin" *ngIf="fun.getUserTypeChip(userType)"><ion-chip class="_bg_info ion-no-margin user-type-chip">{{fun.getUserTypeChip(userType)}}</ion-chip></p>
+        <ion-button class="ion-no-margin ion-text-capitalize noPaddingStart" fill="clear" (click)="navCtrl.navigateForward(helper._AP.VIEW_PROFILE, {state: {data: personal, userId: user.id}})" *ngIf="this.userType === this._UT.AGENT || this.userType === this._UT.HEAD_CONTRACTOR">View Profile</ion-button>
+        <ion-button class="ion-no-margin ion-text-capitalize noPaddingStart" fill="clear" *ngIf="fun.getQBtnTxt(userType)"  (click)="navCtrl.navigateRoot(helper._AP.JOBS)">{{fun.getQBtnTxt(userType)}}</ion-button>
+      </ion-label>
+      <ion-button class="ion-no-margin ion-no-padding _black" slot="end" fill="clear" (click)="auth.logout(true, true)">
+        <ion-icon [src]="helper._IMG.LOGOUT" size="large"></ion-icon>
+      </ion-button>
+    </ion-item>
+    <ion-toolbar>
+      <ion-segment (ionChange)="currentSegment = $event.detail.value" [value]="currentSegment" mode="md">
+        <ion-segment-button (click)="setValFormOnChangeSeg(currentSegment)" mode="md" [value]="sg.val" *ngFor="let sg of _SEGMENTS">
+          <ion-icon [name]="sg.iconName" [src]="sg.srcName"></ion-icon>
+        </ion-segment-button>
+      </ion-segment>
+    </ion-toolbar>
+    <ng-container [ngSwitch]="currentSegment">
+      <ng-template ngSwitchDefault>
+        <!--// Personal -->
+        <form [formGroup]="personalForm" (ngSubmit)="submitForm('personal')" class="ion-padding">
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-label position="stacked">First Name</ion-label>
+            <ion-input autocapitalize="sentences"   (keyup.enter)="submitForm()" class="myBorderInput" formControlName="first_name" type="text" placeholder="Your first name" ></ion-input>
+          </ion-item>
+          <app-error [errorMsg]="vCheck('first_name', '_INPUT')"></app-error>
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-label position="stacked">Last Name</ion-label>
+            <ion-input autocapitalize="sentences"   class="myBorderInput" (keyup.enter)="submitForm()" formControlName="last_name" placeholder="Your last name"></ion-input>
+          </ion-item>
+          <app-error [errorMsg]="vCheck('last_name','_INPUT')"></app-error>
+          <ng-container *ngIf="userType === _UT.CONTRACTOR">
+            <ion-item  class="ion-no-padding" lines="none">
+              <ion-label position="stacked">Business Name</ion-label>
+              <ion-input autocapitalize="sentences"   (keyup.enter)="submitForm()" class="myBorderInput" formControlName="business_name" type="text" placeholder="Business Name" ></ion-input>
+            </ion-item>
+            <app-error colorClass="_white" errorMsg=""></app-error>
+          </ng-container>
+          <ng-container *ngIf="userType === _UT.CONTRACTOR">
+            <ion-item class="ion-no-padding" lines="none">
+              <ion-label position="stacked">License #</ion-label>
+              <ion-input autocapitalize="sentences"   (keyup.enter)="submitForm()" class="myBorderInput" formControlName="facebook_page" type="text" placeholder="License Number" ></ion-input>
+            </ion-item>
+            <app-error colorClass="_white" errorMsg=""></app-error>
+          </ng-container>
+          <ng-container *ngIf="userType === _UT.CONTRACTOR">
+            <ion-item class="ion-no-padding" lines="none">
+              <ion-label position="stacked">Projects Offered</ion-label>
+              <ion-select class="fullWidthSelect myBorderInput" [interfaceOptions]="{subHeader: 'Choose your projects', cssClass: 'customMultipleSelect'}" okText="Select" [disabled]="!_SERVICES_ARR?.length" (keyup.enter)="submitForm()" mode="ios" multiple="true" formControlName="hi_pages" placeholder="Choose your projects">
+                <ion-select-option *ngFor="let sr of _SERVICES_ARR" [value]="sr?.id">{{sr?.title}}</ion-select-option>
+              </ion-select>
+            </ion-item>
+            <app-error colorClass="_white" [errorMsg]="vCheck('services', '_MULTIPLE_SELECT')"></app-error>
+          </ng-container>
+          <!--<ion-item *ngIf="this.userType === this._UT.CONTRACTOR" class="ion-no-padding" lines="none">
+            <ion-label position="stacked">Trades</ion-label>
+            <ion-input autocapitalize="sentences"   (keyup.enter)="submitForm()" class="myBorderInput" formControlName="hi_pages" type="text" placeholder="Seperate each Trade by" ></ion-input>
+          </ion-item>-->
+          <!--<ion-item *ngIf="this.userType === this._UT.CONTRACTOR" class="ion-no-padding" lines="none">
+            <ion-label position="stacked">Service Seeking</ion-label>
+            <ion-input autocapitalize="sentences"   (keyup.enter)="submitForm()" class="myBorderInput" formControlName="service_seeking" type="text" placeholder="Service Seeking Link" ></ion-input>
+          </ion-item>-->
+          <ng-container *ngIf="userType === _UT.CONTRACTOR">
+            <ion-item class="ion-no-padding" lines="none">
+              <ion-label position="stacked">ABN #</ion-label>
+              <ion-input autocapitalize="sentences"   (keyup.enter)="submitForm()" class="myBorderInput" formControlName="trade" type="text" placeholder="ABN" ></ion-input>
+            </ion-item>
+            <app-error colorClass="_white" errorMsg=""></app-error>
+          </ng-container>
+
+          <!--<ion-item *ngIf="this.userType === this._UT.CONTRACTOR" class="ion-no-padding" lines="none">
+                      <ion-label position="stacked">Areas Service</ion-label>
+                      <ion-input autocapitalize="sentences"   (keyup.enter)="submitForm()" class="myBorderInput" formControlName="areas_serviced" type="text" placeholder="Areas Service" ></ion-input>
+                    </ion-item>-->
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-label position="stacked">Email</ion-label>
+            <ion-input autocapitalize="sentences"   class="myBorderInput" (keyup.enter)="submitForm()" formControlName="email" placeholder="Your E-mail"></ion-input>
+          </ion-item>
+          <app-error [errorMsg]="vCheck('email','_EMAIL')"></app-error>
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-label position="stacked">Phone</ion-label>
+            <ion-input autocapitalize="sentences"   class="myBorderInput" (keyup.enter)="submitForm()" formControlName="phone" placeholder="Your phone"></ion-input>
+          </ion-item>
+          <app-error [errorMsg]="vCheck('phone','_INPUT')"></app-error>
+          <ng-container *ngIf="userType === _UT.SUPPLIER">
+            <ion-item class="ion-no-padding" lines="none">
+              <ion-select class="myBorderInput" (keyup.enter)="submitForm()" formControlName="account_type" placeholder="Business Type" interface="action-sheet">
+                <ion-select-option *ngFor="let at of _AT" [value]="at">{{at}}</ion-select-option>
+              </ion-select>
+            </ion-item>
+            <app-error colorClass="_white" [errorMsg]="vCheck('account_type', '_SELECT')"></app-error>
+          </ng-container>
+          <ng-container *ngIf="userType === _UT.CONTRACTOR">
+            <ion-item class="ion-no-padding" lines="none">
+              <ion-label position="stacked">Radius around which you work (in km)</ion-label>
+              <ion-input autocapitalize="sentences"   class="myBorderInput" (keyup.enter)="submitForm()" formControlName="radius" type="tel" placeholder="Your Working Radius"></ion-input>
+            </ion-item>
+            <app-error colorClass="_white" [errorMsg]="vCheck('radius', '_INPUT')"></app-error>
+          </ng-container>
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-label position="stacked">Address</ion-label>
+            <ion-input autocapitalize="sentences"   class="myBorderInput" (keyup.enter)="submitForm()" formControlName="address" placeholder="Enter address"></ion-input>
+          </ion-item>
+          <app-error [errorMsg]="vCheck('address','_INPUT')"></app-error>
+
+          <ion-item class="ion-no-padding ion-margin-bottom" lines="none">
+            <ion-avatar slot="start" class="myAvatar">
+              <img alt="user" [src]="helper._IMG.DEFAULT_LOADING" [errorImage]="helper._IMG.DEFAULT_USER" [lazyLoad]="tempimg" >
+            </ion-avatar>
+            <ion-button (click)="addNewFile()" fill="clear" class="ion-text-capitalize ion-no-margin noPaddingStart" >
+              <ion-icon [src]="helper._IMG.ADD_IMG"></ion-icon>&nbsp;Upload Image
+            </ion-button>
+          </ion-item>
+          <ion-button class="ion-no-margin ion-text-capitalize" size="large" expand="block" type="submit">Save</ion-button>
+        </form>
+      </ng-template>
+      <ng-template ngSwitchCase="Upload">
+        <div class="ion-padding-horizontal">
+          <p>Insurance Photos & Documents</p>
+          <app-image-row class="uploaded-attachments" *ngIf="personal?.insurance_details?.length" [filesItems]="personal.insurance_details" imgKey="url" canDelete="true" (onClickTrigger)="onDeleteFile($event,'Insurance')"></app-image-row>
+          <ion-button fill="clear" expand="full" size="large" class="ion-text-capitalize ion-no-margin dottedBorder _medium smallText uploadBtn" (click)="uploadFilePhoto('Insurance')">
+            <!--<ion-icon [src]="helper._IMG.CLOUD_BACKUP_UP_ARROW"></ion-icon>-->&nbsp;Upload Insurance Photos & Documents
+          </ion-button>
+        </div>
+        <div class="ion-padding-horizontal">
+          <p>Licence Photos & Documents</p>
+          <app-image-row class="uploaded-attachments" *ngIf="personal?.licence_details?.length" [filesItems]="personal.licence_details" imgKey="url" canDelete="true" (onClickTrigger)="onDeleteFile($event, 'License')"></app-image-row>
+          <ion-button fill="clear" expand="full" size="large" class="ion-text-capitalize ion-no-margin dottedBorder _medium smallText uploadBtn" (click)="uploadFilePhoto('License')">
+            <!--<ion-icon [src]="helper._IMG.CLOUD_BACKUP_UP_ARROW"></ion-icon>-->&nbsp;Upload Licence Photos & Documents
+          </ion-button>
+        </div>
+      </ng-template>
+      <ng-template ngSwitchCase="CompanySettings">
+        <form [formGroup]="companySettingForm" (ngSubmit)="submitForm('companySetting')" class="ion-padding">
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-label position="stacked">Company Name</ion-label>
+            <ion-input autocapitalize="sentences"   (keyup.enter)="submitForm()" class="myBorderInput" formControlName="company_name" type="text" placeholder="Company Name" ></ion-input>
+          </ion-item>
+          <app-error [errorMsg]="vCheck('company_name', '_INPUT')"></app-error>
+          <ion-item *ngIf="userType === _UT.AGENT" class="ion-no-padding" lines="none">
+            <ion-label position="stacked">Quote Validity</ion-label>
+            <ion-input autocapitalize="sentences"   (keyup.enter)="submitForm()" class="myBorderInput" formControlName="quote_validity" type="text" placeholder="30" ></ion-input>
+          </ion-item>
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-label position="stacked">Accounts Email</ion-label>
+            <ion-input autocapitalize="sentences"   class="myBorderInput" (keyup.enter)="submitForm()" formControlName="company_email" placeholder="Accounts Email"></ion-input>
+          </ion-item>
+          <app-error [errorMsg]="vCheck('company_email','_EMAIL')"></app-error>
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-label position="stacked">Accounts Phone</ion-label>
+            <ion-input autocapitalize="sentences"   class="myBorderInput" (keyup.enter)="submitForm()" formControlName="company_phone" placeholder="Accounts Phone"></ion-input>
+          </ion-item>
+          <app-error [errorMsg]="vCheck('company_phone','_INPUT')"></app-error>
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-label position="stacked">Company Address</ion-label>
+            <ion-input autocapitalize="sentences"   class="myBorderInput" (keyup.enter)="submitForm()" formControlName="company_address" placeholder="Company Address"></ion-input>
+          </ion-item>
+          <app-error [errorMsg]="vCheck('company_address','_INPUT')"></app-error>
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-label position="stacked">Terms and Conditions</ion-label>
+            <ion-input autocapitalize="sentences"   class="myBorderInput" (keyup.enter)="submitForm()" formControlName="ipi" placeholder="Terms and Conditions"></ion-input>
+          </ion-item>
+          <app-error [errorMsg]="vCheck('ipi','_INPUT')"></app-error>
+          <ion-item class="ion-no-padding ion-margin-bottom" lines="none">
+            <ion-avatar slot="start" class="myAvatar">
+              <img alt="user" [src]="helper._IMG.DEFAULT_LOADING" [errorImage]="helper._IMG.DEFAULT_USER" [lazyLoad]="tempimg2">
+            </ion-avatar>
+            <ion-label position="stacked">Company Logo</ion-label>
+            <ion-button (click)="addNewFile2()" fill="clear" class="ion-text-capitalize ion-no-margin noPaddingStart" >
+              <ion-icon [src]="helper._IMG.ADD_IMG"></ion-icon>&nbsp;Upload Image
+            </ion-button>
+          </ion-item>
+          <ion-button class="ion-no-margin ion-text-capitalize" size="large" expand="block" type="submit">Save</ion-button>
+        </form>
+      </ng-template>
+      <ng-template ngSwitchCase="Security">
+        <form [formGroup]="securityForm" (ngSubmit)="submitForm('security')" class="ion-padding">
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-label position="stacked">Password</ion-label>
+            <ion-input autocapitalize="sentences"   (keyup.enter)="submitForm()" class="myBorderInput" formControlName="password" type="password" placeholder="New Password" [clearOnEdit]="false"></ion-input>
+          </ion-item>
+          <app-error [errorMsg]="vCheck('password', '_PASSWORD')"></app-error>
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-label position="stacked">Password Confirm</ion-label>
+            <ion-input autocapitalize="sentences"   (keyup.enter)="submitForm()" class="myBorderInput" formControlName="passwordc" type="password" placeholder="Password Confirm" [clearOnEdit]="false"></ion-input>
+          </ion-item>
+          <app-error [errorMsg]="vCheck('passwordc', '_EQUAL', {passwordEqualField: 'password'})"></app-error>
+          <ion-button class="ion-no-margin ion-text-capitalize" size="large" expand="block" type="submit">Save</ion-button>
+        </form>
+      </ng-template>
+      <ng-template ngSwitchCase="Schedule"></ng-template>
+    </ng-container>
+  </ng-container>
+</ion-content>

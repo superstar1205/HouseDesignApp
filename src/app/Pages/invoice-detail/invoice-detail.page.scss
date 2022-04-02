@@ -1,0 +1,10 @@
+ion-footer{
+  ion-tab-bar{
+    ion-tab-button, ion-tab-button:hover{
+      max-width: 300px;
+      ion-icon, ion-label, ion-icon:hover, ion-label:hover{
+        color: var(--ion-color-white) !important;
+      }
+    }
+  }
+}

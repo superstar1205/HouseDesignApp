@@ -1,0 +1,6 @@
+<ng-container *ngIf="!heightOnly && progressBar">
+  <ion-progress-bar type="indeterminate"></ion-progress-bar>
+</ng-container>
+<ng-container *ngIf="heightOnly">
+  <ion-progress-bar [ngClass]="pColorClass"></ion-progress-bar>
+</ng-container>

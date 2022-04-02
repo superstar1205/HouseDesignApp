@@ -1,0 +1,56 @@
+{
+  "_args": [
+    [
+      "cordova-plugin-app-version@0.1.9",
+      "/Users/apple/Desktop/IonicProjects/sgtechgit/Houseace"
+    ]
+  ],
+  "_from": "cordova-plugin-app-version@0.1.9",
+  "_id": "cordova-plugin-app-version@0.1.9",
+  "_inBundle": false,
+  "_integrity": "sha1-nbBgeGMzenEEiTAuX1CpBPFEm9s=",
+  "_location": "/cordova-plugin-app-version",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "version",
+    "registry": true,
+    "raw": "cordova-plugin-app-version@0.1.9",
+    "name": "cordova-plugin-app-version",
+    "escapedName": "cordova-plugin-app-version",
+    "rawSpec": "0.1.9",
+    "saveSpec": null,
+    "fetchSpec": "0.1.9"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/cordova-plugin-app-version/-/cordova-plugin-app-version-0.1.9.tgz",
+  "_spec": "0.1.9",
+  "_where": "/Users/apple/Desktop/IonicProjects/sgtechgit/Houseace",
+  "author": {
+    "name": "whiteoctober"
+  },
+  "bugs": {
+    "url": "https://github.com/whiteoctober/cordova-plugin-app-version/issues"
+  },
+  "description": "Cordova plugin to return the version number of the current app",
+  "homepage": "https://github.com/whiteoctober/cordova-plugin-app-version#readme",
+  "keywords": [
+    "cordova",
+    "ecosystem:cordova",
+    "app",
+    "version",
+    "appversion",
+    "plugin"
+  ],
+  "license": "MIT",
+  "name": "cordova-plugin-app-version",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/whiteoctober/cordova-plugin-app-version.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "0.1.9"
+}

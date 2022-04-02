@@ -1,0 +1,64 @@
+{
+  "_args": [
+    [
+      "cordova-plugin-file-opener2@3.0.0",
+      "/Users/apple/Desktop/IonicProjects/sgtechgit/Houseace"
+    ]
+  ],
+  "_from": "cordova-plugin-file-opener2@3.0.0",
+  "_id": "cordova-plugin-file-opener2@3.0.0",
+  "_inBundle": false,
+  "_integrity": "sha512-yQcJ5coOlfkDcTfIhFJEL2A7SWtLhy50y51Cb+EEkI7Y0lP74Ec2tsMtIOhe9i8wPSoSfnDcN77Hj6CSeIjogA==",
+  "_location": "/cordova-plugin-file-opener2",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "version",
+    "registry": true,
+    "raw": "cordova-plugin-file-opener2@3.0.0",
+    "name": "cordova-plugin-file-opener2",
+    "escapedName": "cordova-plugin-file-opener2",
+    "rawSpec": "3.0.0",
+    "saveSpec": null,
+    "fetchSpec": "3.0.0"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/cordova-plugin-file-opener2/-/cordova-plugin-file-opener2-3.0.0.tgz",
+  "_spec": "3.0.0",
+  "_where": "/Users/apple/Desktop/IonicProjects/sgtechgit/Houseace",
+  "author": {
+    "name": "pwlin05@gmail.com"
+  },
+  "bugs": {
+    "url": "https://github.com/pwlin/cordova-plugin-file-opener2/issues"
+  },
+  "cordova": {
+    "id": "cordova-plugin-file-opener2",
+    "platforms": [
+      "android",
+      "ios",
+      "wp8",
+      "windows"
+    ]
+  },
+  "description": "A File Opener Plugin for Cordova. (The Original Version)",
+  "engines": {
+    "cordova": ">=6.0.0"
+  },
+  "homepage": "https://github.com/pwlin/cordova-plugin-file-opener2#readme",
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova-android",
+    "cordova-ios",
+    "cordova-wp8",
+    "cordova-windows"
+  ],
+  "license": "MIT",
+  "name": "cordova-plugin-file-opener2",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pwlin/cordova-plugin-file-opener2.git"
+  },
+  "version": "3.0.0"
+}

@@ -1,0 +1,12 @@
+ion-item{
+  height: 1rem !important;
+  --min-height: 1rem !important;
+  overflow: visible !important;
+  --background: transparent !important;
+  ion-label{
+    font-size: 0.7rem !important;
+    margin: 0;
+    height: 100%;
+    --background: transparent !important;
+  }
+}

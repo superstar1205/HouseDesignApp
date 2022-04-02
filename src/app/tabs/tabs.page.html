@@ -1,0 +1,20 @@
+<ion-tabs>
+  <ion-tab-bar slot="bottom" ><!-- [selectedTab]="selectedTab" -->
+    <ion-tab-button tab="Jobs" [selected]="selectedTab === 'Jobs'">
+      <ion-icon [src]="_IMG.PORTFOLIO1"></ion-icon>
+      <ion-label>My Jobs</ion-label>
+    </ion-tab-button>
+    <ion-tab-button tab="Estimate" [selected]="selectedTab === 'Estimate'" *ngIf="userType && userType !== _UT.CONTRACTOR">
+      <ion-icon [src]="_IMG.FLASH"></ion-icon>
+      <ion-label>Instant Quote</ion-label>
+    </ion-tab-button>
+    <ion-tab-button tab="Payments" [selected]="selectedTab === 'Payments'" *ngIf="userType && userType !== _UT.CONTRACTOR && userType !== _UT.SUPPLIER">
+      <ion-icon [src]="_IMG.ATM"></ion-icon>
+      <ion-label>Payments</ion-label>
+    </ion-tab-button>
+    <ion-tab-button tab="Account" [selected]="selectedTab === 'Account'">
+      <ion-icon [src]="_IMG.USER9"></ion-icon>
+      <ion-label>Account</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-tabs>

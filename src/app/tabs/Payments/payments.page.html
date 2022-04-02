@@ -1,0 +1,9 @@
+<app-header headerType="payment" [scrollArea]="scrollArea" [options]="{totalPending: totalPending, totalPaid: totalPaid}" (onTriggerBtn)="btnTrigger($event)"></app-header>
+<ion-content no-bounce #scrollArea scrollEvents>
+  <ng-container *ngIf="!_USER && !loadingUser">
+    <app-tab-login cssClassMain="ion-padding"></app-tab-login>
+  </ng-container>
+  <ng-container *ngIf="_USER && !loadingUser">
+    <app-tab-payment-list [loading]="(currentTab.val==='Pending') ? isLoadingPending : (currentTab.val==='Paid') ? isLoadingPaid : isLoadingAll" [list]="(currentTab.val==='Pending') ? listPending : (currentTab.val==='Paid') ? listPaid : listAll" (btnTrigger)="btnTrigger($event)"></app-tab-payment-list>
+  </ng-container>
+</ion-content>

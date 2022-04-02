@@ -1,0 +1,96 @@
+.moodsGrid, .fieldGrid{
+  img{
+    min-height: 100px;
+    min-width: 100%;
+    display: block;
+    padding: 35%;
+    background: var(--ion-color-medium-tint);
+  }
+  img.ng-lazyloaded {
+    padding: 0 !important;
+  }
+}
+.relativePosition{
+  position: relative;
+}
+.overlay{
+  opacity: 0.7 !important;
+  margin: 0 auto;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  position: absolute;
+  transform: translate(0%,0%) !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+  background: var(--ion-color-hoverImg-overlay) !important;
+}
+.overlayCenter{
+  background: transparent !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  width: 50px !important;
+  min-width: auto !important;
+}
+.overlaySelected {
+  background: var(--ion-color-white);
+  border-radius: 50px;
+  min-width: 100px;
+}
+.isFilter{
+  filter: grayscale(1);
+}
+.incrementer-input{
+  position: relative;
+  padding: 0 41px !important;
+  .incrementer-icon{
+    background: var(--ion-color-primary);
+    padding: 13.5px;
+    color: var(--ion-color-primary-contrast);
+  }
+  .incrementer-icon-left{
+    position: absolute;
+    left: -1px;
+  }
+  .incrementer-icon-right{
+    position: absolute;
+    right: -1px;
+  }
+}
+ion-footer{
+  .paymentToolbar{
+    --min-height: 95px;
+    --background: var(--my-img-border-color);
+    border-top: var(--border1);
+    ion-input{
+      margin: 8px 0;
+      border: var(--border1);
+      background: var(--ion-color-white);
+      border-radius: 3px;
+    }
+  }
+  .stepsToolbar{
+    --min-height: 50px;
+    --background: var(--ion-color-primary);
+    --color: var(--ion-color-maroon-contrast);
+    ion-button{
+      --color: var(--ion-color-maroon-contrast);
+    }
+  }
+}
+.scopeMarginInput{
+  position: relative;
+  padding: 0 33px 0 0 !important;
+  .percentage-icon-right{
+    position: absolute;
+    padding: 10.5px;
+    right: 0;
+    background: #f3f7f9;
+    height: 41px;
+    width: 42px;
+    text-align: center;
+  }
+}

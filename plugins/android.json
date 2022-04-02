@@ -1,0 +1,70 @@
+{
+  "prepare_queue": {
+    "installed": [],
+    "uninstalled": []
+  },
+  "config_munge": {
+    "files": {}
+  },
+  "installed_plugins": {
+    "cordova-plugin-android-permissions": {
+      "PACKAGE_NAME": "dev.houseace.sgtech"
+    },
+    "cordova-plugin-app-version": {
+      "PACKAGE_NAME": "dev.houseace.sgtech"
+    },
+    "cordova-plugin-camera": {
+      "ANDROID_SUPPORT_V4_VERSION": "27.+",
+      "PACKAGE_NAME": "dev.houseace.sgtech"
+    },
+    "cordova-plugin-chooser": {
+      "PACKAGE_NAME": "dev.houseace.sgtech"
+    },
+    "cordova-plugin-device": {
+      "PACKAGE_NAME": "dev.houseace.sgtech"
+    },
+    "cordova-plugin-file": {
+      "PACKAGE_NAME": "dev.houseace.sgtech"
+    },
+    "cordova-plugin-file-opener2": {
+      "ANDROID_SUPPORT_V4_VERSION": "27.+",
+      "PACKAGE_NAME": "dev.houseace.sgtech"
+    },
+    "cordova-plugin-file-transfer": {
+      "PACKAGE_NAME": "dev.houseace.sgtech"
+    },
+    "cordova-plugin-ionic-keyboard": {
+      "PACKAGE_NAME": "dev.houseace.sgtech"
+    },
+    "cordova-plugin-ionic-webview": {
+      "ANDROID_SUPPORT_ANNOTATIONS_VERSION": "27.+",
+      "PACKAGE_NAME": "dev.houseace.sgtech"
+    },
+    "cordova-plugin-splashscreen": {
+      "PACKAGE_NAME": "dev.houseace.sgtech"
+    },
+    "cordova-plugin-statusbar": {
+      "PACKAGE_NAME": "dev.houseace.sgtech"
+    },
+    "cordova-plugin-telerik-imagepicker": {
+      "PACKAGE_NAME": "dev.houseace.sgtech"
+    },
+    "cordova-plugin-whitelist": {
+      "PACKAGE_NAME": "dev.houseace.sgtech"
+    },
+    "cordova-plugin-x-toast": {
+      "PACKAGE_NAME": "dev.houseace.sgtech"
+    },
+    "cordova-sqlite-storage": {
+      "PACKAGE_NAME": "dev.houseace.sgtech"
+    },
+    "onesignal-cordova-plugin": {
+      "PACKAGE_NAME": "dev.houseace.sgtech"
+    }
+  },
+  "dependent_plugins": {
+    "cordova-plugin-add-swift-support": {
+      "PACKAGE_NAME": "dev.houseace.sgtech"
+    }
+  }
+}

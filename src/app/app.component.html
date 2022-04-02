@@ -1,0 +1,6 @@
+<ion-app>
+  <div id="custom-overlay" [style.display]="splash ? 'flex': 'none'">
+    <div class="flb"><p *ngIf="appVersion">v{{appVersion}}</p></div>
+  </div>
+  <ion-router-outlet></ion-router-outlet>
+</ion-app>

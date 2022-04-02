@@ -1,0 +1,189 @@
+<ng-container [ngSwitch]="headerType">
+  <ng-template ngSwitchDefault>
+    <ion-header mode="ios" class="noHeaderBorder">
+      <ion-toolbar>
+        <ion-button *ngIf="_ME" size="small" slot="start" fill="clear" class="myRippleBtn btnWithDot" (click)="onBtnTrigger('_MESSAGE')">
+        <ion-icon name="mail"></ion-icon>
+        <ion-text *ngIf="_MSG?.length" color="success">•</ion-text>
+      </ion-button>
+        <ion-title class="centerMargin">
+          <ion-button class="ion-no-margin maxHeadLogoWidth" fill="clear">
+            <img alt="img" [src]="_IMG.HOUSEWT_COLOR">
+          </ion-button>
+        </ion-title>
+        <ion-button *ngIf="_ME" size="small" slot="end" fill="clear" class="myRippleBtn btnWithDot" (click)="onBtnTrigger('_BELL')">
+          <ion-icon [src]="_IMG.NOTIFICATION"></ion-icon>
+          <ion-text *ngIf="_NOTIF?.length" color="success">•</ion-text>
+        </ion-button>
+      </ion-toolbar>
+    </ion-header>
+  </ng-template>
+  <ng-template ngSwitchCase="simple">
+    <ion-header mode="ios">
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-back-button mode="md"></ion-back-button>
+        </ion-buttons>
+        <ion-title class="ion-no-padding">
+          {{options.title}}
+        </ion-title>
+        <app-more-button *ngIf="options?.popButtonsArr?.length" [isDisabled]="options?.isMoreDisabled" [myPopBtns]="options?.popButtonsArr" [isAnyDotTrue]="options?.isMoreDot" (onButtonTrigger)="onBtnTrigger('_MORE', $event)" slot="end"></app-more-button>
+      </ion-toolbar>
+      <ion-toolbar class="minH3" *ngIf="options.loadingPro && !loadingUser">
+        <app-progress-loading [progressBar]="options.loadingPro"></app-progress-loading>
+      </ion-toolbar>
+    </ion-header>
+  </ng-template>
+  <ng-template ngSwitchCase="steps">
+    <ion-header mode="ios" class="noHeaderBorder">
+      <ion-toolbar [appScrollVanish]="scrollArea">
+        <ion-button *ngIf="_ME" size="small" slot="start" fill="clear" class="myRippleBtn btnWithDot" (click)="onBtnTrigger('_MESSAGE')">
+          <ion-icon name="mail"></ion-icon>
+          <ion-text *ngIf="_MSG?.length" color="success">•</ion-text>
+        </ion-button>
+        <ion-title class="centerMargin">
+          <ion-button class="ion-no-margin maxHeadLogoWidth" fill="clear" (click)="onBtnTrigger('_LOGO')">
+            <img alt="img" [src]="_IMG.HOUSEWT_COLOR">
+          </ion-button>
+        </ion-title>
+        <ion-button *ngIf="_ME" size="small" slot="end" fill="clear" class="myRippleBtn btnWithDot" (click)="onBtnTrigger('_BELL')">
+          <ion-icon [src]="_IMG.NOTIFICATION"></ion-icon>
+          <ion-text *ngIf="_NOTIF?.length" color="success">•</ion-text>
+        </ion-button>
+      </ion-toolbar>
+      <ion-toolbar *ngIf="options.isProjectName && !loadingUser">
+        <p class="ion-no-margin ion-text-center _primary">Project Name</p>
+        <ng-container *ngIf="options.canEditProjectName; then showEditableProjectName; else showStaticProjectName"></ng-container>
+        <ng-template #showEditableProjectName>
+          <ion-item class="innerPaddingEnd itemMinH30" lines="none">
+            <ion-icon slot="start" size="small" class="ion-no-margin"></ion-icon>
+            <ion-input autocapitalize="sentences"   #inputProjectName [(ngModel)]="options.projectName" class="ion-text-center projectInput"></ion-input>
+            <ion-icon slot="end" name="md-create" class="ion-no-margin" size="small" (click)="inputProjectName.setFocus()"></ion-icon>
+          </ion-item>
+        </ng-template>
+        <ng-template #showStaticProjectName>
+          <h3 class="ion-text-center xSmallMarginTop" [innerHTML]="options.projectName"></h3>
+        </ng-template>
+      </ion-toolbar>
+      <ion-toolbar *ngIf="options.isTabName && !loadingUser">
+        <h3 class="ion-text-center ion-no-margin" [innerHTML]="options.tabName"></h3>
+      </ion-toolbar>
+      <ion-toolbar class="minH3" *ngIf="options.isProgressBar && !loadingUser">
+        <ion-progress-bar mode="ios" *ngIf="options.isProgressBar" [value]="options.progress"></ion-progress-bar>
+      </ion-toolbar>
+    </ion-header>
+  </ng-template>
+  <ng-template ngSwitchCase="other">
+    <ion-header mode="ios" class="noHeaderBorder">
+      <ion-toolbar [appScrollVanish]="scrollArea">
+        <ion-button *ngIf="_ME" size="small" slot="start" fill="clear" class="myRippleBtn btnWithDot" (click)="onBtnTrigger('_MESSAGE')">
+          <ion-icon name="mail"></ion-icon>
+          <ion-text *ngIf="_MSG?.length" color="success">•</ion-text>
+        </ion-button>
+        <app-more-button *ngIf="options?.popButtonsArr?.length" [isDisabled]="options?.isMoreDisabled" [myPopBtns]="options?.popButtonsArr" [isAnyDotTrue]="options?.isMoreDot" (onButtonTrigger)="onBtnTrigger('_MORE', $event)" slot="start"></app-more-button>
+        <app-filter *ngIf="options.isFilter" [isDisabled]="options.filterDis" [filterOptArr]="options.filterArr" [cFilterByStatus]="options.cFilter" (onFilterTrigger)="onBtnTrigger('filter', $event)" slot="start"></app-filter>
+        <ion-title class="centerMargin">
+          <ion-button class="ion-no-margin maxHeadLogoWidth" fill="clear" (click)="onBtnTrigger('_LOGO')">
+            <img alt="img" [src]="_IMG.HOUSEWT_COLOR">
+          </ion-button>
+        </ion-title>
+        <!--<ion-button *ngIf="!_ME" size="small" slot="end" fill="clear" class="myRippleBtn" disabled><ion-icon></ion-icon></ion-button>-->
+        <ion-button *ngIf="options?.isSearchIco" size="small" slot="end" fill="clear" class="myRippleBtn" [disabled]="options?.isSearchIcoDis" (click)="onBtnTrigger('_SEARCH')">
+          <ion-icon name="ios-search"></ion-icon>
+        </ion-button>
+        <ion-button *ngIf="_ME" size="small" slot="end" fill="clear" class="myRippleBtn btnWithDot" (click)="onBtnTrigger('_BELL')">
+          <ion-icon [src]="_IMG.NOTIFICATION"></ion-icon>
+          <ion-text *ngIf="_NOTIF?.length" color="success">•</ion-text>
+        </ion-button>
+      </ion-toolbar>
+      <ion-toolbar *ngIf="options.isProjectName">
+        <p class="ion-no-margin ion-text-center _primary">Project Name</p>
+        <ng-container *ngIf="options.canEditProjectName; then showEditableProjectName; else showStaticProjectName"></ng-container>
+        <ng-template #showEditableProjectName>
+          <ion-item class="innerPaddingEnd itemMinH30" lines="none">
+            <ion-icon slot="start" size="small" class="ion-no-margin"></ion-icon>
+            <ion-input autocapitalize="sentences"   #inputProjectName [(ngModel)]="options.projectName" class="ion-text-center projectInput"></ion-input>
+            <ion-icon slot="end" name="md-create" class="ion-no-margin" size="small" (click)="inputProjectName.setFocus()"></ion-icon>
+          </ion-item>
+        </ng-template>
+        <ng-template #showStaticProjectName>
+          <h3 class="ion-text-center xSmallMarginTop" [innerHTML]="options.projectName"></h3>
+        </ng-template>
+      </ion-toolbar>
+      <ion-toolbar *ngIf="options.isTabName">
+        <h3 class="ion-text-center ion-no-margin" [innerHTML]="options.tabName"></h3>
+      </ion-toolbar>
+      <ion-toolbar class="minH3" *ngIf="options.isSearch || options.isProgressBar || options.loadingPro">
+        <app-search [isDisabled]="options?.isSearchDisabled" *ngIf="options.isSearch" (onSearchTrigger)="onChangeIn($event)"></app-search>
+        <ion-progress-bar mode="ios" *ngIf="options.isProgressBar" [value]="options.progress"></ion-progress-bar>
+        <app-progress-loading [progressBar]="options.loadingPro"></app-progress-loading>
+      </ion-toolbar>
+    </ion-header>
+  </ng-template>
+  <ng-template ngSwitchCase="myJob">
+    <ion-header mode="ios" class="noHeaderBorder">
+      <ion-toolbar [appScrollVanish]="scrollArea">
+        <ion-button *ngIf="_ME" size="small" slot="start" fill="clear" class="myRippleBtn btnWithDot" (click)="onBtnTrigger('_MESSAGE')">
+          <ion-icon name="mail"></ion-icon>
+          <ion-text *ngIf="_MSG?.length" color="success">•</ion-text>
+        </ion-button>
+        <app-filter *ngIf="options.isFilter" [isDisabled]="options.filterDis" [filterOptArr]="options.filterArr" [cFilterByStatus]="options.cFilter" (onFilterTrigger)="onBtnTrigger('filter', $event)" slot="start"></app-filter>
+        <!--<ion-button *ngIf="(_ME && options?.isSearchIco)" size="small" slot="start" fill="clear" class="myRippleBtn" disabled><ion-icon></ion-icon></ion-button>-->
+        <ion-title class="centerMargin">
+          <ion-button class="ion-no-margin maxHeadLogoWidth" fill="clear" (click)="onBtnTrigger('_LOGO')">
+            <img alt="img" [src]="_IMG.HOUSEWT_COLOR">
+          </ion-button>
+        </ion-title>
+        <ion-button *ngIf="(_ME && !options?.isSearchIco)" size="small" slot="end" fill="clear" class="myRippleBtn" disabled><ion-icon></ion-icon></ion-button>        <ion-button *ngIf="options?.isSearchIco" size="small" slot="end" fill="clear" class="myRippleBtn btnWithDot" [disabled]="options?.isSearchIcoDis" (click)="onBtnTrigger('_SEARCH')">
+          <ion-icon name="ios-search"></ion-icon>
+          <ion-text *ngIf="options?.isSearchIcoDot" color="success">•</ion-text>
+        </ion-button>
+        <ion-button *ngIf="_ME" size="small" slot="end" fill="clear" class="myRippleBtn btnWithDot" (click)="onBtnTrigger('_BELL')">
+          <ion-icon [src]="_IMG.NOTIFICATION"></ion-icon>
+          <ion-text *ngIf="_NOTIF?.length" color="success">•</ion-text>
+        </ion-button>
+      </ion-toolbar>
+      <ion-toolbar *ngIf="options.isTabName && !loadingUser">
+        <h3 class="ion-text-center ion-no-margin" [innerHTML]="options.tabName"></h3>
+      </ion-toolbar>
+      <ion-toolbar class="minH3" *ngIf="!loadingUser">
+        <app-progress-loading [progressBar]="options.loadingPro" [heightOnly]="!options.loadingPro"></app-progress-loading>
+      </ion-toolbar>
+    </ion-header>
+  </ng-template>
+  <ng-template ngSwitchCase="payment">
+    <ion-header mode="ios" class="noHeaderBorder">
+      <ion-toolbar [appScrollVanish]="scrollArea">
+        <ion-button *ngIf="_ME" size="small" slot="start" fill="clear" class="myRippleBtn btnWithDot" (click)="onBtnTrigger('_MESSAGE')">
+          <ion-icon name="mail"></ion-icon>
+          <ion-text *ngIf="_MSG?.length" color="success">•</ion-text>
+        </ion-button>
+        <ion-title class="centerMargin">
+          <ion-button class="ion-no-margin maxHeadLogoWidth" fill="clear" (click)="onBtnTrigger('_LOGO')">
+            <img alt="img" [src]="_IMG.HOUSEWT_COLOR">
+          </ion-button>
+        </ion-title>
+        <ion-button *ngIf="_ME" size="small" slot="end" fill="clear" class="myRippleBtn btnWithDot" (click)="onBtnTrigger('_BELL')">
+          <ion-icon [src]="_IMG.NOTIFICATION"></ion-icon>
+          <ion-text *ngIf="_NOTIF?.length" color="success">•</ion-text>
+        </ion-button>
+      </ion-toolbar>
+      <!--<ion-toolbar [appScrollVanish]="scrollArea" *ngIf="!loadingUser">
+        <h3 class="ion-text-center ion-no-margin">Payment</h3>
+      </ion-toolbar>-->
+      <ion-toolbar *ngIf="_ME && !loadingUser" mode="md">
+        <ion-segment (ionChange)="onBtnTrigger('_SEGMENT', $event.detail.value)" value="" mode="md">
+          <ion-segment-button mode="md" value="">
+            <ion-label class="ion-text-capitalize">All {{(options.totalPending || options.totalPaid) ? '('+(options.totalPending + options.totalPaid)+')':'(0)'}}</ion-label>
+          </ion-segment-button>
+          <ion-segment-button mode="md" value="pending">
+            <ion-label class="ion-text-capitalize">Pending {{options.totalPending?'('+options.totalPending+')':'(0)'}}</ion-label>
+          </ion-segment-button>
+          <ion-segment-button mode="md" value="paid">
+            <ion-label class="ion-text-capitalize">Paid {{options.totalPaid?'('+options.totalPaid+')':'(0)'}}</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </ion-toolbar>
+    </ion-header>
+  </ng-template>
+</ng-container>

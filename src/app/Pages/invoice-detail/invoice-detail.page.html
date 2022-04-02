@@ -1,0 +1,181 @@
+<ion-header mode="md" class="noHeaderBorder">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button mode="md"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-no-padding headTitle">
+      Invoice Info
+      </ion-title>
+    <ion-button size="small" slot="end" fill="clear" class="myRippleBtn" (click)="btn('removeInvoice')" *ngIf="(userType === _UT.HEAD_CONTRACTOR || userType === _UT.AGENT)">
+      <ion-icon name="md-trash"></ion-icon>
+    </ion-button>
+    <ion-button size="small" slot="end" fill="clear" class="myRippleBtn btnWithDot" (click)="btn('Message')">
+      <ion-icon name="mail"></ion-icon>
+      <ion-text *ngIf="_MSG?.length" color="success">•</ion-text>
+    </ion-button>
+    <ion-button size="small" slot="end" fill="clear" class="myRippleBtn btnWithDot" (click)="btn('NotiBell')">
+      <ion-icon [src]="helper._IMG.NOTIFICATION"></ion-icon>
+      <ion-text *ngIf="isNotification" color="success">•</ion-text>
+    </ion-button>
+  </ion-toolbar>
+  <app-progress-loading [progressBar]="progressBar"></app-progress-loading>
+</ion-header>
+<ion-content no-bounce>
+  <ng-container *ngIf="!details">
+    <ion-list class="skeletonList">
+      <ion-item class="ion-no-margin" lines="none">
+        <ion-label class="ion-no-margin">
+          <ion-skeleton-text animated style="height: 25px; width: 30%;"></ion-skeleton-text>
+        </ion-label>
+        <ion-skeleton-text slot="end" animated style="height: 25px; width: 20%; margin-right: 16px"></ion-skeleton-text>
+      </ion-item>
+      <ion-item class="ion-no-margin itemMinH20" lines="none">
+        <ion-label class="ion-no-margin">
+          <ion-skeleton-text slot="start" animated style="height: 25px; width: 30%;"></ion-skeleton-text>
+        </ion-label>
+      </ion-item>
+      <p class="ion-no-margin ion-padding-horizontal" style="width: 100%; padding-right: 16px"><ion-skeleton-text animated style="height: 20px; border-radius: 3px; "></ion-skeleton-text></p>
+      <ion-item class="ion-no-margin itemMinH20" lines="none" *ngFor="let i of [1,2,3,4]">
+        <ion-label class="ion-no-margin">
+          <ion-skeleton-text class="ion-float-left" slot="start" animated style="height: 25px; width: 30%;"></ion-skeleton-text>
+          <ion-skeleton-text class="ion-float-left ion-margin-horizontal" animated style="height: 25px; width: 30%;"></ion-skeleton-text>
+        </ion-label>
+      </ion-item>
+      <p class="ion-no-margin" style="width: 100%;"><ion-skeleton-text animated style="height: 3px; border-radius: 3px"></ion-skeleton-text></p>
+      <ion-item class="ion-no-margin" lines="none">
+        <ion-label class="ion-no-margin">
+          <ion-skeleton-text slot="start" animated style="height: 25px; width: 30%;"></ion-skeleton-text>
+        </ion-label>
+      </ion-item>
+      <ion-item class="ion-no-margin itemMinH20" lines="none">
+        <ion-label class="ion-no-margin">
+          <ion-skeleton-text slot="start" animated style="height: 25px; width: 30%;"></ion-skeleton-text>
+        </ion-label>
+      </ion-item>
+      <ion-item class="ion-no-margin itemMinH20" lines="none" *ngFor="let i of [1,2,3]">
+        <ion-label class="ion-no-margin">
+          <ion-skeleton-text slot="start" animated style="height: 25px; width: 30%;"></ion-skeleton-text>
+        </ion-label>
+        <ion-skeleton-text slot="end" animated style="height: 25px; width: 30px; margin-right: 16px"></ion-skeleton-text>
+      </ion-item>
+      <p class="ion-no-margin" style="width: 100%;"><ion-skeleton-text animated style="height: 3px; border-radius: 3px"></ion-skeleton-text></p>
+      <ion-item class="ion-no-margin itemMinH20" lines="none" *ngFor="let i of [1,2]">
+        <ion-label class="ion-no-margin">
+          <ion-skeleton-text class="ion-float-right" slot="end" animated style="height: 25px; width: 30%;"></ion-skeleton-text>
+        </ion-label>
+      </ion-item>
+      <p class="ion-no-margin ion-padding-horizontal" style="width: 100%;"><ion-skeleton-text animated style="height: 30px; border-radius: 3px"></ion-skeleton-text></p>
+      <ion-item class="ion-no-margin itemMinH20" lines="none">
+        <ion-label class="ion-no-margin">
+          <ion-skeleton-text slot="start" animated style="height: 25px; width: 30%;"></ion-skeleton-text>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ng-container>
+  <ng-container *ngIf="details">
+    <div class="ion-padding-horizontal">
+      <ion-item class="ion-no-padding" lines="none">
+        <ion-label class="halfOpacity">
+          #{{details?.invoice_info?.number}}
+        </ion-label>
+        <ion-button (click)="btn('downloadPdf')" slot="end" fill="clear" class="ion-text-capitalize">
+          Download PDF
+        </ion-button>
+      </ion-item>
+      <ion-item class="ion-no-padding" lines="none">
+        <ion-label class="ion-no-margin">
+          <h2 class="ion-text-capitalize ion-text-wrap boldText">{{details?.invoice_info?.first_name}} {{details?.invoice_info?.last_name}}</h2>
+          <p class="ion-text-wrap">{{details?.invoice_info?.address}}</p>
+          <p>Email: {{details?.invoice_info?.email | viewIn}}</p>
+          <p>Phone: {{details?.invoice_info?.phone | viewIn}}</p>
+        </ion-label>
+      </ion-item>
+      <ion-item class="ion-no-padding itemMinH25" lines="none">
+        <ion-label>
+          <p>Invoice Date: {{details?.invoice_info?.invoice_date | viewIn}}</p>
+          <p>Due Date: {{details?.invoice_info?.invoice_duedate | viewIn}}</p>
+        </ion-label>
+      </ion-item>
+    </div>
+      <ion-progress-bar mode="ios"></ion-progress-bar>
+    <div class="ion-padding-horizontal">
+      <ion-item class="ion-no-padding" lines="none">
+        <ion-label>
+          <p class="ion-text-wrap boldText">Project: {{details?.project_info?.name | viewIn}}</p>
+        </ion-label>
+      </ion-item>
+      <ng-container *ngIf="details?.project_info?.details?.length">
+        <ng-container *ngFor="let item of details.project_info.details">
+          <ion-item class="ion-no-padding" lines="full">
+            <ion-label>
+              <ion-row>
+                <ion-col class="ion-no-padding ion-align-self-center ion-text-start" size="1">#{{item.number}}</ion-col>
+                <ion-col class="ion-no-padding ion-align-self-center ion-text-start" size="11">
+                  <p>{{item.title ? item.title+' (%'+item.percent+' of total)': '-'}}</p>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col class="ion-no-padding ion-align-self-center ion-text-start" size="1">&nbsp;</ion-col>
+                <ion-col class="ion-no-padding ion-align-self-center ion-text-start" size="5">
+                  <p>Quantity</p>
+                </ion-col>
+                <ion-col class="ion-no-padding ion-align-self-center ion-text-end" size="6">
+                  <p>{{item.quantity | viewIn}}</p>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col class="ion-no-padding ion-align-self-center ion-text-start" size="1">&nbsp;</ion-col>
+                <ion-col class="ion-no-padding ion-align-self-center ion-text-start" size="5">
+                  <p>Unit Cost</p>
+                </ion-col>
+                <ion-col class="ion-no-padding ion-align-self-center ion-text-end" size="6">
+                  <p>{{item.unit_cost | currency:'USD':'symbol':'1.2-2'}}</p>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col class="ion-no-padding ion-align-self-center ion-text-start" size="1">&nbsp;</ion-col>
+                <ion-col class="ion-no-padding ion-align-self-center ion-text-start" size="5">
+                  <p>Total</p>
+                </ion-col>
+                <ion-col class="ion-no-padding ion-align-self-center ion-text-end" size="6">
+                  <p>{{item.total | currency:'USD':'symbol':'1.2-2'}}</p>
+                </ion-col>
+              </ion-row>
+            </ion-label>
+          </ion-item>
+        </ng-container>
+      </ng-container>
+      <ion-item class="ion-no-padding" lines="none">
+        <ion-label>
+          <p class="ion-text-end boldText">Sub - Total amount: {{details?.price_info?.sub_total_amount | currency:'USD':'symbol':'1.2-2'}}</p>
+          <p class="ion-text-end boldText">GST: {{details?.price_info?.tax_price | currency:'USD':'symbol':'1.2-2'}}</p>
+        </ion-label>
+      </ion-item>
+    </div>
+      <ion-item class="ion-no-padding itemMinH25 __white-tintE" lines="none">
+        <ion-label class="ion-padding-horizontal">
+          <h2 class="ion-text-end boldText">Grand Total: {{details?.price_info?.grand_total | currency:'USD':'symbol':'1.2-2'}}</h2>
+        </ion-label>
+      </ion-item>
+    <div class="ion-padding-horizontal">
+      <ion-item class="ion-no-padding" lines="none">
+        <ion-label>
+          <p class="boldText">Payment Instructions</p>
+          <ion-note class="ion-text-wrap smallText">{{details?.instructions?.company_instructions}}</ion-note>
+        </ion-label>
+      </ion-item>
+    </div>
+  </ng-container>
+</ion-content>
+<ion-footer *ngIf="details && details?.status === 'Pending'">
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button layout="icon-top" class="btnPrimary" (click)="btn('remind')">
+      <ion-icon [src]="helper._IMG.NOTIFICATION"></ion-icon>
+      <ion-label>Remind</ion-label>
+    </ion-tab-button>
+    <ion-tab-button layout="icon-top" class="btnSuccess" (click)="btn('mark_as_paid')">
+      <ion-icon [src]="helper._IMG.CHECK_CIRCLE"></ion-icon>
+      <ion-label>Approve</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-footer>

@@ -1,0 +1,80 @@
+<div class="ion-padding fullWidth">
+  <form [formGroup]="sForm" (ngSubmit)="saveForm()">
+    <ng-container formArrayName="field">
+      <ng-container *ngFor="let X of sForm['controls'].field['controls']; let ix = index" formGroupName="{{ix}}">
+        <ion-card class="ion-no-margin ion-padding-horizontal ion-margin-vertical">
+          <ion-list>
+            <ion-item class="ion-no-padding" lines="none">
+              <ion-label position="stacked" class="ion-no-margin _black">Title</ion-label>
+              <ion-input autocapitalize="sentences"   class="myBorderInput" (keyup.enter)="saveForm()" formControlName="title" placeholder="Title"></ion-input>
+            </ion-item>
+            <app-error [errorMsg]="vCheck(X.controls, 'title','_INPUT')"></app-error>
+            <ion-item class="ion-no-padding" lines="none">
+              <ion-label position="stacked" class="ion-no-margin _black">Date From</ion-label>
+              <ion-datetime class="myBorderInput" (keyup.enter)="saveForm()" formControlName="dateFrom" displayFormat="DD/MM/YYYY" placeholder="DD/MM/YYYY" [min]="helper.getCDT('YYYY-MM-DD')" [max]="helper.getCDT('YYYY-MM-DD', helper._MOMENT().add('20', 'year'))"></ion-datetime>
+            </ion-item>
+            <app-error [errorMsg]="vCheck(X.controls, 'dateFrom', '_SELECT')"></app-error>
+            <ion-item class="ion-no-padding" lines="none">
+              <ion-label position="stacked" class="ion-no-margin _black">Due Date </ion-label>
+              <ion-datetime class="myBorderInput" (keyup.enter)="saveForm()" formControlName="dateTo" displayFormat="DD/MM/YYYY" placeholder="DD/MM/YYYY" [min]="helper.getCDT('YYYY-MM-DD')" [max]="helper.getCDT('YYYY-MM-DD', helper._MOMENT().add('20', 'year'))"></ion-datetime>
+            </ion-item>
+            <app-error [errorMsg]="vCheck(X.controls,'dateTo', '_SELECT')"></app-error>
+            <ion-item class="ion-no-padding" lines="none">
+              <ion-label position="stacked" class="ion-no-margin _black">Description</ion-label>
+              <ion-textarea autocapitalize="sentences"  formControlName="description" rows="3" class="myBorderInput" placeholder="Description" ></ion-textarea>
+            </ion-item>
+            <!--<app-image-row [filesItems]="tempFileArr" canDelete="true" (onClickTrigger)="onTempDeleteFile($event)"></app-image-row>
+            <ion-item class="ion-no-padding" lines="none">
+              <ion-button fill="clear" [disabled]="tempFileArr.length >= 5" (click)="addNewFile()" class="ion-no-padding"><ion-icon class="marginInlineEnd16" name="add-circle-outline"></ion-icon> Upload Images</ion-button>
+            </ion-item>-->
+            <ng-container formArrayName="photosArray">
+              <ng-container *ngFor="let photo of X.controls['photosArray']['controls']; let photoIndex = index" formGroupName="{{photoIndex}}">
+                <ion-input autocapitalize="sentences"   type="hidden" formControlName="photo"></ion-input>
+              </ng-container>
+            </ng-container>
+            <ng-container formArrayName="tasks">
+              <ion-item class="ion-no-padding" lines="none">
+                <p class="_black" slot="start">Tasks</p>
+                <ion-button slot="end" fill="clear" (click)="addNewInputField(ix)" class="ion-text-capitalize ion-no-margin noPaddingStart">
+                  <ion-icon name="add-circle-outline"></ion-icon> ADD TASK
+                </ion-button>
+              </ion-item>
+              <div class="ion-no-padding displayRepeater">
+                <ion-card class="ion-no-margin ion-padding-horizontal">
+                  <ng-container *ngFor="let Y of X.controls['tasks']['controls']; let iy = index" formGroupName="{{iy}}">
+                    <ion-item class="ion-no-padding" lines="none">
+                      <ion-label position="stacked" class="ion-no-margin _black">Title</ion-label>
+                      <ion-input autocapitalize="sentences"   type="text" formControlName="taskTitle" class="myBorderInput" placeholder="Title"></ion-input>
+                    </ion-item>
+                    <app-error [errorMsg]="vCheck(Y.controls,'taskTitle', '_INPUT')"></app-error>
+                    <ion-item class="ion-no-padding" lines="none">
+                      <ion-checkbox formControlName="taskDone" slot="start" class="ion-no-margin marginInlineEnd16 iconSize noZIndex" mode="md"></ion-checkbox>
+                      <ion-label class="smallText">Mark Done</ion-label>
+                      <ion-button slot="end" fill="clear" (click)="removeInputField(ix,iy)"><ion-icon class="marginInlineEnd16" name="trash"></ion-icon> Remove</ion-button>
+                    </ion-item>
+                  </ng-container>
+                </ion-card>
+              </div>
+            </ng-container>
+            <ion-item class="ion-no-padding" lines="none">
+              <ion-checkbox formControlName="done" slot="start" class="ion-no-margin marginInlineEnd16 iconSize noZIndex" mode="md"></ion-checkbox>
+              <ion-label class="smallText">Mark Form Done</ion-label>
+              <ion-button slot="end" fill="clear" (click)="removeForm(ix)"><ion-icon class="marginInlineEnd16" name="trash"></ion-icon> Remove</ion-button>
+            </ion-item>
+          </ion-list>
+        </ion-card>
+      </ng-container>
+    </ng-container>
+    <ion-button type="submit" class="btnSuccess" size="large" expand="block">Save Schedule</ion-button>
+  </form>
+  <ion-button class="ion-no-margin ion-margin-vertical" size="large" expand="block" (click)="addNewForm()">ADD SCHEDULE</ion-button>
+  <div class="RelativeContent">
+    <ion-progress-bar mode="ios"></ion-progress-bar>
+    <div class="centerContent"><p class="ORScheduleOptions">OR</p></div>
+  </div>
+  <ion-item class="ion-margin-vertical templateSelect ion-no-padding fullWidth __white-tintE" lines="none" *ngIf="projectScheduleTemplate?.length">
+    <ion-select (ionChange)="onChangeTemplate($event)" value="schedule_template" interface="action-sheet" placeholder="Load Schedule from Template?" class="fullWidth">
+      <ion-select-option [value]="tem.id" *ngFor="let tem of projectScheduleTemplate">{{tem.title}}</ion-select-option>
+    </ion-select>
+  </ion-item>
+</div>

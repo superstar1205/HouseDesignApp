@@ -1,0 +1,4 @@
+<ion-button [disabled]="isDisabled" size="small" slot="end" fill="clear" class="myRippleBtn btnWithDot" (click)="openNotification()">
+  <ion-icon [src]="helper._IMG.NOTIFICATION"></ion-icon>
+  <ion-text *ngIf="notifications?.length" color="success">•</ion-text>
+</ion-button>

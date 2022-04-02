@@ -1,0 +1,19 @@
+.myTitle{
+  position: absolute;
+  margin-bottom: 0;
+  bottom: 0;
+  background: var(--ion-color-white-contrast);
+  width: 100%;
+  opacity: 0.9;
+  z-index: 10;
+  p{
+    color: var(--ion-color-white) !important;
+  }
+}
+ion-toolbar:last-child{
+  height: 100vh;
+  ion-slides{
+    height: 100vh;
+    top: -56px;
+  }
+}

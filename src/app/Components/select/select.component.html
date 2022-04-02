@@ -1,0 +1,5 @@
+<ion-item class="ion-no-padding" lines="none" button detail="false">
+  <ion-label position="stacked" class="ion-no-margin _black" *ngIf="label">{{label}}</ion-label>
+  <ion-input autocapitalize="sentences"   class="myBorderInput" [placeholder]="placeholder" [value]="myValue" (click)="onChangeSelect()" readonly></ion-input>
+  <ion-icon class="ion-no-margin" slot="end" name="md-arrow-dropdown"></ion-icon>
+</ion-item>

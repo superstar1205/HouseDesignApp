@@ -1,0 +1,8 @@
+<form (ngSubmit)="onSearch()" action=".">
+  <ion-searchbar mode="md" [disabled]="isDisabled" [placeholder]="placeHolder"
+      class="mySearchBar"
+      name="searchText"
+      [(ngModel)]="searchTxt"
+      (ionChange)="onChangeSearch()">
+  </ion-searchbar>
+</form>

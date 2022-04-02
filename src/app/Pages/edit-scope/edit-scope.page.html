@@ -1,0 +1,263 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button mode="md"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-no-padding">Edit scope</ion-title>
+  </ion-toolbar>
+  <ion-toolbar *ngIf="data">
+    <p class="ion-no-margin ion-text-center _primary">Project Name</p>
+    <ion-item class="innerPaddingEnd itemMinH30" lines="none">
+      <ion-icon slot="start" size="small" class="ion-no-margin"></ion-icon>
+      <ion-input autocapitalize="sentences"   #inputProjectName [(ngModel)]="data.scopeDataArray.projectName" class="ion-text-center projectInput"></ion-input>
+      <ion-icon slot="end" name="md-create" class="ion-no-margin" size="small" (click)="inputProjectName.setFocus()"></ion-icon>
+    </ion-item>
+  </ion-toolbar>
+</ion-header>
+<ion-content no-bounce #scrollArea scrollEvents>
+  <ng-container *ngIf="!data">
+    <ion-list class="skeletonList">
+      <ion-skeleton-text animated style="width: 48%; height: 200px; margin: 1%; float: left" *ngFor="let ii of [1,2,3,4,5,6,7,8]"></ion-skeleton-text>
+    </ion-list>
+  </ng-container>
+  <ng-container *ngIf="data">
+    <h4 class="ion-no-margin ion-text-center ion-margin-top" [innerHTML]="oBj(false).title"></h4>
+    <p class="ion-text-center ion-no-margin ion-padding-horizontal xSmallText" [innerHTML]="oBj(false).description"></p>
+    <ng-container [ngSwitch]="oBj(false).acf_fc_layout">
+      <ng-template ngSwitchDefault>
+        <ion-grid class="fieldGrid">
+          <ng-container *ngFor="let f of oBj(); let i = index">
+            <ion-row *ngIf="i % 3 === 0">
+              <ion-col size="4" *ngIf="i < oBj().length">
+                <img alt="img" (click)="itemSelect(i, oBj()[i].quantity ? 'img' : 'toggle')" [ngClass]="oBj()[i].isSelected ? 'noFilterImg':'isFilter'" [lazyLoad]="oBj()[i].image" [src]="helper._IMG.DEFAULT_NO_IMG" [errorImage]="helper._IMG.DEFAULT_NO_IMG" />
+                <ion-row class="overlaySelected centerContent" *ngIf="(_.isNumber(oBj()[i].isSelected) && oBj()[i].isSelected>0)">
+                  <ion-col size="3"><ion-icon name="md-remove" (click)="itemSelect(i, 'dec')"></ion-icon></ion-col>
+                  <ion-col size="6" class="ion-text-center"><span class="_primary">{{oBj()[i].isSelected}}</span></ion-col>
+                  <ion-col size="3"><ion-icon name="md-add" (click)="itemSelect(i)"></ion-icon></ion-col>
+                </ion-row>
+                <ion-item class="ion-no-margin ion-no-padding itemMinH20" lines="none">
+                  <ion-label class="ion-no-margin ion-text-center font13" [innerHTML]="oBj()[i].title"></ion-label>
+                </ion-item>
+              </ion-col>
+              <ion-col size="4" *ngIf="(i+1) < oBj().length">
+                <img alt="img" (click)="itemSelect((i+1), oBj()[i+1].quantity ? 'img' : 'toggle')" [ngClass]="oBj()[i+1].isSelected ? 'noFilterImg':'isFilter'"  [lazyLoad]="oBj()[i+1].image" [src]="helper._IMG.DEFAULT_NO_IMG" [errorImage]="helper._IMG.DEFAULT_NO_IMG" />
+                <ion-row class="overlaySelected centerContent" *ngIf="(_.isNumber(oBj()[(i+1)].isSelected) && oBj()[(i+1)].isSelected>0)">
+                  <ion-col size="3"><ion-icon name="md-remove" (click)="itemSelect((i+1), 'dec')"></ion-icon></ion-col>
+                  <ion-col size="6" class="ion-text-center"><span class="_primary">{{oBj()[(i+1)].isSelected}}</span></ion-col>
+                  <ion-col size="3"><ion-icon name="md-add" (click)="itemSelect((i+1))"></ion-icon></ion-col>
+                </ion-row>
+                <ion-item class="ion-no-margin ion-no-padding itemMinH20" lines="none">
+                  <ion-label class="ion-no-margin ion-text-center font13" [innerHTML]="oBj()[(i+1)].title"></ion-label>
+                </ion-item>
+              </ion-col>
+              <ion-col size="4" *ngIf="(i+2) < oBj().length">
+                <img alt="img" (click)="itemSelect((i+2), oBj()[i+2].quantity ? 'img' : 'toggle')" [ngClass]="oBj()[i+2].isSelected ? 'noFilterImg':'isFilter'"  [lazyLoad]="oBj()[i+2].image" [src]="helper._IMG.DEFAULT_NO_IMG" [errorImage]="helper._IMG.DEFAULT_NO_IMG" />
+                <ion-row class="overlaySelected centerContent" *ngIf="(_.isNumber(oBj()[(i+2)].isSelected) && oBj()[(i+2)].isSelected>0)">
+                  <ion-col size="3"><ion-icon name="md-remove" (click)="itemSelect((i+2), 'dec')"></ion-icon></ion-col>
+                  <ion-col size="6" class="ion-text-center"><span class="_primary">{{oBj()[(i+2)].isSelected}}</span></ion-col>
+                  <ion-col size="3"><ion-icon name="md-add" (click)="itemSelect((i+2))"></ion-icon></ion-col>
+                </ion-row>
+                <ion-item class="ion-no-margin ion-no-padding itemMinH20" lines="none">
+                  <ion-label class="ion-no-margin ion-text-center font13" [innerHTML]="oBj()[(i+2)].title"></ion-label>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+          </ng-container>
+        </ion-grid>
+      </ng-template>
+      <ng-template [ngSwitchCase]="AFL.MOODS">
+        <ion-grid class="moodsGrid">
+          <ng-container *ngFor="let f of oBj(true, 'mood_fields') let mi = index">
+            <ion-row *ngIf="mi % 2 === 0">
+              <ion-col size="6" *ngIf="mi < oBj(true, 'mood_fields').length">
+                <div class="relativePosition" (click)="itemSelect(mi, 'toggle','mood_fields')">
+                  <img alt="img" [lazyLoad]="oBj(true, 'mood_fields')[mi].image" [src]="helper._IMG.DEFAULT_NO_IMG" [errorImage]="helper._IMG.DEFAULT_NO_IMG" />
+                  <div class="overlay" *ngIf="oBj(true, 'mood_fields')[mi].isSelected"><img [src]="helper._IMG.CHECK_CIRCLE" alt="icon" class="overlayCenter"></div>
+                </div>
+              </ion-col>
+              <ion-col size="6" *ngIf="(mi+1) < oBj(true, 'mood_fields').length">
+                <div class="relativePosition" (click)="itemSelect((mi+1), 'toggle','mood_fields')">
+                  <img alt="img" [lazyLoad]="oBj(true, 'mood_fields')[mi+1].image" [src]="helper._IMG.DEFAULT_NO_IMG" [errorImage]="helper._IMG.DEFAULT_NO_IMG" />
+                  <div class="overlay" *ngIf="oBj(true, 'mood_fields')[mi+1].isSelected"><img [src]="helper._IMG.CHECK_CIRCLE" alt="icon" class="overlayCenter"></div>
+                </div>
+              </ion-col>
+            </ion-row>
+          </ng-container>
+        </ion-grid>
+      </ng-template>
+      <ng-template [ngSwitchCase]="AFL.ADDITIONAL_NOTES">
+        <div class="ion-padding-horizontal">
+          <ion-textarea autocapitalize="sentences" rows="6" class="myBorderInput" [(ngModel)]="oBj(false).newAdditionalNotes"></ion-textarea>
+        </div>
+      </ng-template>
+      <ng-template [ngSwitchCase]="AFL.WIDTH_AND_HEIGHT">
+        <ion-list class="ion-padding-horizontal">
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-label position="stacked" class="ion-no-margin _black">Length (m)</ion-label>
+            <ion-input autocapitalize="sentences"   type="number" class="myBorderInput incrementer-input" [(ngModel)]="oBj(false).wh_width" (ionChange)="calPrice()" placeholder="Width">
+              <ion-icon name="md-remove" class="incrementer-icon incrementer-icon-left" (click)="(oBj(false).wh_width = _.round((_.toNumber(oBj(false).wh_width) - 1)))"></ion-icon>
+              <ion-icon name="md-add" class="incrementer-icon incrementer-icon-right" (click)="(oBj(false).wh_width = _.round((_.toNumber(oBj(false).wh_width) + 1)))"></ion-icon>
+            </ion-input>
+          </ion-item>
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-label position="stacked" class="ion-no-margin _black">Height (m)</ion-label>
+            <ion-input autocapitalize="sentences"   type="number" class="myBorderInput incrementer-input" [(ngModel)]="oBj(false).wh_height" (ionChange)="calPrice()" placeholder="Height">
+              <ion-icon name="md-remove" class="incrementer-icon incrementer-icon-left" (click)="(oBj(false).wh_height = _.round((_.toNumber(oBj(false).wh_height) - 1)))"></ion-icon>
+              <ion-icon name="md-add" class="incrementer-icon incrementer-icon-right" (click)="(oBj(false).wh_height = _.round((_.toNumber(oBj(false).wh_height) + 1)))"></ion-icon>
+            </ion-input>
+          </ion-item>
+        </ion-list>
+      </ng-template>
+      <ng-template [ngSwitchCase]="AFL.WIDTH_AND_LENGTH">
+        <ion-list class="ion-padding-horizontal">
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-label position="stacked" class="ion-no-margin _black">Width (m)</ion-label>
+            <ion-input autocapitalize="sentences"   type="number" class="myBorderInput incrementer-input" [(ngModel)]="oBj(false).wl_width" (ionChange)="calPrice()" placeholder="Width">
+              <ion-icon name="md-remove" class="incrementer-icon incrementer-icon-left" (click)="(oBj(false).wl_width = _.round((_.toNumber(oBj(false).wl_width) - 1)))"></ion-icon>
+              <ion-icon name="md-add" class="incrementer-icon incrementer-icon-right" (click)="(oBj(false).wl_width = _.round((_.toNumber(oBj(false).wl_width) + 1)))"></ion-icon>
+            </ion-input>
+          </ion-item>
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-label position="stacked" class="ion-no-margin _black">Length (m)</ion-label>
+            <ion-input autocapitalize="sentences"   type="number" class="myBorderInput incrementer-input" [(ngModel)]="oBj(false).wl_length" (ionChange)="calPrice()" placeholder="Length">
+              <ion-icon name="md-remove" class="incrementer-icon incrementer-icon-left" (click)="(oBj(false).wl_length = _.round((_.toNumber(oBj(false).wl_length) - 1)))"></ion-icon>
+              <ion-icon name="md-add" class="incrementer-icon incrementer-icon-right" (click)="(oBj(false).wl_length = _.round((_.toNumber(oBj(false).wl_length) + 1)))"></ion-icon>
+            </ion-input>
+          </ion-item>
+        </ion-list>
+      </ng-template>
+      <ng-template [ngSwitchCase]="AFL.PRICE_AND_AREA">
+        <ion-list class="ion-padding-horizontal">
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-label position="stacked" class="ion-no-margin _black">Price (per m2)</ion-label>
+            <ion-input autocapitalize="sentences"   type="number" class="myBorderInput" [(ngModel)]="oBj(false).pa_price" (ionChange)="calPrice()" placeholder="Price"></ion-input>
+          </ion-item>
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-label position="stacked" class="ion-no-margin _black">Area (m2)</ion-label>
+            <ion-input autocapitalize="sentences"   type="number" class="myBorderInput" [(ngModel)]="oBj(false).pa_area" (ionChange)="calPrice()" placeholder="Area"></ion-input>
+          </ion-item>
+        </ion-list>
+      </ng-template>
+      <ng-template [ngSwitchCase]="AFL.LENGTH">
+        <ion-list class="ion-padding-horizontal">
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-label position="stacked" class="ion-no-margin _black">Length (m)</ion-label>
+            <ion-input autocapitalize="sentences"   type="number" class="myBorderInput incrementer-input" [(ngModel)]="oBj(false).l_length" (ionChange)="calPrice()" placeholder="Price">
+              <ion-icon name="md-remove" class="incrementer-icon incrementer-icon-left" (click)="(oBj(false).l_length = _.round((_.toNumber(oBj(false).l_length) - 1)))"></ion-icon>
+              <ion-icon name="md-add" class="incrementer-icon incrementer-icon-right" (click)="(oBj(false).l_length = _.round((_.toNumber(oBj(false).l_length) + 1)))"></ion-icon>
+            </ion-input>
+          </ion-item>
+        </ion-list>
+      </ng-template>
+      <ng-template [ngSwitchCase]="AFL.AREA">
+        <ion-list class="ion-padding-horizontal">
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-label position="stacked" class="ion-no-margin _black">Area (m2)</ion-label>
+            <ion-input autocapitalize="sentences"   type="number" class="myBorderInput" [(ngModel)]="oBj(false).a_area" (ionChange)="calPrice()" placeholder="Price">
+              <ion-icon name="md-remove" class="incrementer-icon incrementer-icon-left" (click)="(oBj(false).a_area = _.round((_.toNumber(oBj(false).a_area) - 1)))"></ion-icon>
+              <ion-icon name="md-add" class="incrementer-icon incrementer-icon-right" (click)="(oBj(false).a_area = _.round((_.toNumber(oBj(false).a_area) + 1)))"></ion-icon>
+            </ion-input>
+          </ion-item>
+        </ion-list>
+      </ng-template>
+      <ng-template [ngSwitchCase]="AFL.HEIGHT">
+        <ion-list class="ion-padding-horizontal">
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-label position="stacked" class="ion-no-margin _black">Height (m)</ion-label>
+            <ion-input autocapitalize="sentences"   type="number" class="myBorderInput incrementer-input" [(ngModel)]="oBj(false).h_height" (ionChange)="calPrice()" placeholder="Price">
+              <ion-icon name="md-remove" class="incrementer-icon incrementer-icon-left" (click)="(oBj(false).h_height = _.round((_.toNumber(oBj(false).h_height) - 1)))"></ion-icon>
+              <ion-icon name="md-add" class="incrementer-icon incrementer-icon-right" (click)="(oBj(false).h_height = _.round((_.toNumber(oBj(false).h_height) + 1)))"></ion-icon>
+            </ion-input>
+          </ion-item>
+        </ion-list>
+      </ng-template>
+      <ng-template [ngSwitchCase]="AFL.ROOM_SIZE">
+        <ion-list class="ion-padding-horizontal">
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-label position="stacked" class="ion-no-margin _black">Width (m)</ion-label>
+            <ion-input autocapitalize="sentences"   required type="number" class="myBorderInput incrementer-input" [(ngModel)]="oBj(false).rs_width" (ionChange)="calPrice()" placeholder="Width" min="0">
+              <ion-icon name="md-remove" class="incrementer-icon incrementer-icon-left" (click)="(oBj(false).rs_width = _.round((_.toNumber(oBj(false).rs_width) - 0.1), 1))"></ion-icon>
+              <ion-icon name="md-add" class="incrementer-icon incrementer-icon-right" (click)="(oBj(false).rs_width = _.round((_.toNumber(oBj(false).rs_width) + 0.1), 1))"></ion-icon>
+            </ion-input>
+          </ion-item>
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-label position="stacked" class="ion-no-margin _black">Length (m)</ion-label>
+            <ion-input autocapitalize="sentences"   required type="number" class="myBorderInput incrementer-input" [(ngModel)]="oBj(false).rs_length" (ionChange)="calPrice()" placeholder="Length" min="0">
+              <ion-icon name="md-remove" class="incrementer-icon incrementer-icon-left" (click)="(oBj(false).rs_length = _.round((_.toNumber(oBj(false).rs_length) - 0.1), 1))"></ion-icon>
+              <ion-icon name="md-add" class="incrementer-icon incrementer-icon-right" (click)="(oBj(false).rs_length = _.round((_.toNumber(oBj(false).rs_length) + 0.1), 1))"></ion-icon>
+            </ion-input>
+          </ion-item>
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-label position="stacked" class="ion-no-margin _black">Ceiling Height (m)</ion-label>
+            <ion-input autocapitalize="sentences"   required type="number" class="myBorderInput incrementer-input" [(ngModel)]="oBj(false).rs_height" (ionChange)="calPrice()" placeholder="Height" min="0">
+              <ion-icon name="md-remove" class="incrementer-icon incrementer-icon-left" (click)="(oBj(false).rs_height = _.round((_.toNumber(oBj(false).rs_height) - 0.1), 1))"></ion-icon>
+              <ion-icon name="md-add" class="incrementer-icon incrementer-icon-right" (click)="(oBj(false).rs_height = _.round((_.toNumber(oBj(false).rs_height) + 0.1), 1))"></ion-icon>
+            </ion-input>
+          </ion-item>
+        </ion-list>
+      </ng-template>
+      <ng-template [ngSwitchCase]="AFL.DISPLAY_REPEATER">
+        <ion-item lines="none" class="ion-no-margin ion-no-padding itemMinH35">
+          <ion-button (click)="repeaterItem()" slot="end" fill="clear" class="ion-text-capitalize">
+            <ion-icon name="add-circle"></ion-icon>
+            Add More
+          </ion-button>
+        </ion-item>
+        <ion-list class="ion-padding displayRepeater">
+          <ion-card *ngFor="let dr of displayRepeaterArr; let i=index" class="ion-no-margin">
+            <ion-card-header class="ion-no-margin smallPadding">
+              <ion-item lines="none" class="ion-no-margin ion-no-padding itemMinH25">
+                <ion-label class="ion-no-margin">
+                  <p><b>#{{dr?.customQuoteFieldTitle ? dr?.customQuoteFieldTitle:'Title'}}</b></p>
+                </ion-label>
+                <ion-button *ngIf="displayRepeaterArr.length>1" (click)="repeaterItem(i, 'remove')" fill="clear" size="small" slot="end" class="ion-no-margin _primary">
+                  <ion-icon name="remove-circle"></ion-icon>
+                </ion-button>
+                <ion-button (click)="helper.toggleShowHide(displayRepeaterArr, dr)" fill="clear" size="small" slot="end" class="ion-no-margin _primary">
+                  <ion-icon [name]="dr.isOpen ? 'arrow-down' : 'arrow-forward'" mode="ios"></ion-icon>
+                </ion-button>
+              </ion-item>
+            </ion-card-header>
+            <ion-card-content *ngIf="dr.isOpen" class="ion-padding-horizontal ion-padding-bottom">
+              <ion-item class="ion-no-padding" lines="none">
+                <ion-label position="stacked" class="ion-no-margin _black">Title</ion-label>
+                <ion-input autocapitalize="sentences"   type="text" class="myBorderInput" [(ngModel)]="dr.customQuoteFieldTitle" placeholder="Title"></ion-input>
+              </ion-item>
+              <ion-item class="ion-no-padding" lines="none">
+                <ion-label position="stacked" class="ion-no-margin _black">Price - inc tax</ion-label>
+                <ion-input autocapitalize="sentences"   type="number" min="0" class="myBorderInput" [(ngModel)]="dr.customQuoteFieldPrice" (ionChange)="calPrice()" placeholder="0.00"></ion-input>
+              </ion-item>
+              <ion-item class="ion-no-padding" lines="none">
+                <ion-label position="stacked" class="ion-no-margin _black">Description</ion-label>
+                <ion-textarea autocapitalize="sentences" rows="3" class="myBorderInput" [(ngModel)]="dr.customQuoteFieldDescription" placeholder="Description"></ion-textarea>
+              </ion-item>
+            </ion-card-content>
+          </ion-card>
+        </ion-list>
+      </ng-template>
+    </ng-container>
+  </ng-container>
+</ion-content>
+<ion-footer *ngIf="(pStep !== totalFieldCount)">
+  <ion-toolbar class="paymentToolbar" *ngIf="_USER && (userType === _UT.HEAD_CONTRACTOR || userType === _UT.AGENT)">
+    <ion-title class="ion-no-padding">
+      <ion-item lines="none" class="innerPaddingEnd">
+        <ion-label position="stacked" color="">Payment</ion-label>
+        <ion-input autocapitalize="sentences"   class="myWhiteInput scopeMarginInput" type="number" [(ngModel)]="postData.scopeMargin" (ionChange)="calPrice()">
+          <ion-text class="percentage-icon-right">%</ion-text>
+        </ion-input>
+      </ion-item>
+    </ion-title>
+  </ion-toolbar>
+  <ion-toolbar class="ion-no-padding stepsToolbar" mode="ios">
+    <ion-button slot="start" fill="clear" class="ion-text-capitalize ion-no-margin _white" (click)="onStep('back')">
+      <ion-icon name="ios-arrow-back" slot="start" class="ion-no-margin"></ion-icon>{{pStep?'Back': 'Restart'}}
+    </ion-button>
+    <ion-title>
+      {{postData.projectPrice | currency:'USD':'symbol':'1.2-2'}}
+    </ion-title>
+    <ion-button slot="end" fill="clear" class="ion-text-capitalize ion-no-margin _white" (click)="onStep()">
+      <ion-icon name="ios-arrow-forward" slot="end" class="ion-no-margin"></ion-icon>{{((pStep+1) === totalFieldCount)?'Update': 'Next'}}
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

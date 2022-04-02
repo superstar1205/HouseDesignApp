@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{sTitle}}</ion-title>
+    <ion-button slot="end" fill="clear" class="ion-no-margin myRippleBtn" (click)="dismissMe()">
+      <ion-icon name="md-close"></ion-icon>
+    </ion-button>
+  </ion-toolbar>
+  <ion-toolbar>
+    <app-search [isDisabled]="isLoading" [lazySearch]="lazySearch" (onSearchTrigger)="onChangeIn($event, 'search')"></app-search>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ng-container *ngIf="!isLoading">
+    <ng-container *ngIf="sList?.length">
+      <ng-container [ngSwitch]="mType">
+        <ng-template ngSwitchDefault></ng-template>
+        <ng-template ngSwitchCase="_HEAD_CLIENT">
+          <ion-list>
+            <ion-item class="innerPaddingEnd" *ngFor="let item of sList" (click)="dismissMe(item)">
+              <ion-label>{{item.first_name}} {{item.last_name}} {{item.email ? '('+item.email+')' : ''}}</ion-label>
+              <ion-checkbox class="marginInlineEnd16" mode="ios" slot="start" [(ngModel)]="item.id == sCurrentSelected"></ion-checkbox>
+            </ion-item>
+          </ion-list>
+          <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMore($event)">
+            <ion-infinite-scroll-content loadingText="Hold on, loading content"></ion-infinite-scroll-content>
+          </ion-infinite-scroll>
+        </ng-template>
+      </ng-container>
+    </ng-container>
+    <ng-container *ngIf="!sList?.length">
+      <div class="noDataDiv">
+        <ion-icon color="primary" name="list" mode="ios"></ion-icon>
+        <p>{{sData?.noDataFound?sData.noDataFound:'No item found.'}}</p>
+      </div>
+    </ng-container>
+  </ng-container>
+  <ng-container *ngIf="isLoading">
+    <ion-list>
+      <ion-item class="innerPaddingEnd" *ngFor="let i2 of [1,2,3,4,5,6,7]">
+        <ion-skeleton-text animated slot="start" style="width: 30px; height: 30px; border-radius: 50px"></ion-skeleton-text>
+        <ion-skeleton-text animated style="width: 100%; height: 30px"></ion-skeleton-text>
+      </ion-item>
+    </ion-list>
+  </ng-container>
+</ion-content>

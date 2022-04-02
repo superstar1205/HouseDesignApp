@@ -1,0 +1,4 @@
+<ion-button fill="clear" class="myRippleBtn btnWithDot" [disabled]="isDisabled" (click)="openPopOver($event)">
+  <ion-icon name="md-more"></ion-icon>
+  <ion-text *ngIf="isAnyDotTrue" color="success">•</ion-text>
+</ion-button>

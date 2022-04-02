@@ -1,0 +1,20 @@
+.loadingProjectList{
+  img{
+    object-fit: fill;
+    height: auto;
+    width: 100%;
+    padding: 35%;
+    background: var(--ion-color-medium-tint);
+  }
+  img.ng-lazyloaded {
+    padding: 0 !important;
+    animation: linear 0ms !important;
+  }
+  img.ng-failed-lazyloaded {
+    padding: 35% !important;
+  }
+}
+img.ng-lazyloaded {
+  width: 100%;
+  animation: linear 0ms !important;
+}

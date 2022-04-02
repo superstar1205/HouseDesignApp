@@ -1,0 +1,58 @@
+ion-toolbar{
+  ion-title{
+    font-size: inherit;
+  }
+  .priceTitle{
+    padding-left: unset;
+    padding-right: unset;
+    -webkit-padding-start: 7px;
+    padding-inline-start: 7px;
+    -webkit-padding-end: 7px;
+    padding-inline-end: 7px;
+  }
+}
+.RelativeContent{
+  position: relative;
+}
+p.ORScheduleOptions {
+  width: 30px;
+  background: var(--ion-color-white);
+  text-align: center;
+  color:#C0C0C0;
+}
+.BgItem{
+  --background: #F9F9F9;
+  background: #F9F9F9;
+  ion-label{
+    color:#C0C0C0;
+    font-size: 14px;
+  }
+}
+.btnBottom{
+  width: 100%;
+  bottom: 0;
+  position: fixed;
+  --border-radius: 0 !important;
+  border-radius: 0 !important;
+  z-index: 9;
+  ion-button{
+    width: 50% !important;
+    --border-radius: 0 !important;
+    border-radius: 0 !important;
+    z-index: 9;
+  }
+}
+.contractorPriceInput{
+  position: relative;
+  padding: 0 0 0 33px !important;
+  .dollar-icon-left{
+    position: absolute;
+    padding: 13.5px;
+    left: -1px;
+  }
+}
+.ios {
+  .cPriceToolbar{
+    --min-height: 55px;
+  }
+}

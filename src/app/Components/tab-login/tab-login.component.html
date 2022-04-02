@@ -1,0 +1,106 @@
+<div [ngClass]="cssClassMain">
+  <ng-container [ngSwitch]="loginView">
+    <ng-template ngSwitchDefault>
+      <p class="ion-text-center ion-no-margin ion-margin-bottom">Please login to view information</p>
+      <form [formGroup]="loginForm" (ngSubmit)="submitForm()">
+        <ion-item class="ion-no-padding innerPaddingEnd">
+          <ion-label color="primary" position="stacked">Email/Username</ion-label>
+          <ion-input autocapitalize="sentences"   (keyup.enter)="submitForm()" formControlName="user_login" type="text" placeholder="Enter email or username"></ion-input>
+        </ion-item>
+        <app-error [errorMsg]="vCheck('user_login', '_INPUT')"></app-error>
+        <ion-item class="ion-no-padding innerPaddingEnd">
+          <ion-label color="primary" position="stacked">Password</ion-label>
+          <ion-input autocapitalize="sentences"   (keyup.enter)="submitForm()" formControlName="user_password" type="password" placeholder="Enter password" [clearOnEdit]="false"></ion-input>
+        </ion-item>
+        <app-error [errorMsg]="vCheck('user_password', '_PASSWORD')"></app-error>
+        <br>
+        <ion-button class="ion-text-capitalize" size="large" expand="block" type="submit">Sign In</ion-button>
+      </form>
+      <br>
+      <ion-button class="ion-no-margin ion-text-capitalize centerMargin _black" fill="clear" type="button" (click)="changeView('FORGOT_PASSWORD')">Forgot password?</ion-button>
+      <br>
+      <ion-progress-bar mode="ios"></ion-progress-bar>
+      <p class="ion-text-center">Still no account? Please go to <span class="_primary" (click)="changeView('REGISTER')"><u>Sign Up</u></span></p>
+    </ng-template>
+    <ng-template ngSwitchCase="REGISTER">
+      <p class="ion-text-center ion-no-margin ion-margin-bottom">Please Register to view information</p>
+      <form [formGroup]="registerForm" (ngSubmit)="submitForm()">
+        <ion-item class="ion-no-padding innerPaddingEnd">
+          <ion-label color="primary" position="stacked">I am</ion-label>
+          <ion-select #uType (keyup.enter)="submitForm()" formControlName="user_type" placeholder="Choose your profile" interface="action-sheet" (ionChange)="onChangeRole($event, uType)">
+            <ion-select-option *ngFor="let ut of _UT" [value]="ut">{{_UTT[ut]}}</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <app-error [errorMsg]="vCheck('user_type', '_SELECT')"></app-error>
+        <ion-item class="ion-no-padding innerPaddingEnd">
+          <ion-label color="primary" position="stacked">First Name</ion-label>
+          <ion-input autocapitalize="sentences"   (keyup.enter)="submitForm()" formControlName="user_firstname" type="text" placeholder="First Name"></ion-input>
+        </ion-item>
+        <app-error [errorMsg]="vCheck('user_firstname', '_INPUT')"></app-error>
+        <ion-item class="ion-no-padding innerPaddingEnd">
+          <ion-label color="primary" position="stacked">Last Name</ion-label>
+          <ion-input autocapitalize="sentences"   (keyup.enter)="submitForm()" formControlName="user_lastname" type="text" placeholder="Last Name"></ion-input>
+        </ion-item>
+        <app-error [errorMsg]="vCheck('user_lastname', '_INPUT')"></app-error>
+        <ion-item class="ion-no-padding innerPaddingEnd">
+          <ion-label color="primary" position="stacked">Email</ion-label>
+          <ion-input autocapitalize="sentences"   (keyup.enter)="submitForm()" formControlName="user_email" type="text" placeholder="E-mail"></ion-input>
+        </ion-item>
+        <app-error [errorMsg]="vCheck('user_email', '_EMAIL')"></app-error>
+        <ion-item class="ion-no-padding innerPaddingEnd">
+          <ion-label color="primary" position="stacked">Password</ion-label>
+          <ion-input autocapitalize="sentences"   (keyup.enter)="submitForm()" formControlName="user_password" type="password" placeholder="Password" [clearOnEdit]="false"></ion-input>
+        </ion-item>
+        <app-error [errorMsg]="vCheck('user_password', '_PASSWORD')"></app-error>
+        <ion-item class="ion-no-padding innerPaddingEnd">
+          <ion-label color="primary" position="stacked">Confirm Password</ion-label>
+          <ion-input autocapitalize="sentences"   (keyup.enter)="submitForm()" formControlName="user_passwordc" type="password" placeholder="Confirm Password"></ion-input>
+        </ion-item>
+        <app-error [errorMsg]="vCheck('user_passwordc', '_EQUAL', {passwordEqualField: 'user_password'})"></app-error>
+        <ng-container *ngIf="uType.value === _UT[1]">
+          <ion-item class="ion-no-padding">
+            <ion-select (keyup.enter)="submitForm()" formControlName="account_type" placeholder="Business Type" interface="action-sheet">
+              <ion-select-option *ngFor="let at of _AT" [value]="at">{{at}}</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <app-error colorClass="_white" [errorMsg]="vCheck('account_type', '_SELECT')"></app-error>
+        </ng-container>
+        <ng-container *ngIf="uType.value === _UT[2]">
+          <ion-item class="ion-no-padding">
+            <ion-input autocapitalize="sentences"   (keyup.enter)="submitForm()" formControlName="radius" type="tel" placeholder="How far is your work radius? (in km)"></ion-input>
+          </ion-item>
+          <app-error colorClass="_white" [errorMsg]="vCheck('radius', '_INPUT')"></app-error>
+
+          <ion-item class="ion-no-padding">
+            <ion-select [interfaceOptions]="{subHeader: 'Choose your projects', cssClass: 'customMultipleSelect'}" okText="Select" [disabled]="!_SERVICES_ARR?.length" (keyup.enter)="submitForm()" mode="ios" multiple="true" formControlName="services" placeholder="Choose your projects">
+              <ion-select-option *ngFor="let sr of _SERVICES_ARR" [value]="sr?.id">{{sr?.title}}</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <app-error colorClass="_white" [errorMsg]="vCheck('services', '_MULTIPLE_SELECT')"></app-error>
+        </ng-container>
+        <br>
+        <ion-button class="ion-no-margin ion-text-capitalize" size="large" expand="block" type="submit">Sign Up</ion-button>
+      </form>
+      <br>
+      <ion-progress-bar mode="ios"></ion-progress-bar>
+      <p class="ion-text-center">Have an account already? Please go to <span class="_primary" (click)="changeView('LOGIN')"><u>Sign In</u></span></p>
+
+    </ng-template>
+    <ng-template ngSwitchCase="FORGOT_PASSWORD">
+      <p class="ion-text-center ion-no-margin ion-margin-bottom">Reset Password</p>
+      <p class="ion-text-center smallText">Please enter your email address or username. You will receive a link to create a new password via email.</p>
+      <form [formGroup]="forgotPassForm" (ngSubmit)="submitForm()">
+        <ion-item class="ion-no-padding innerPaddingEnd">
+          <ion-label color="primary" position="stacked">Email/Username</ion-label>
+          <ion-input autocapitalize="sentences"   formControlName="user_login" type="text" placeholder="Enter email or username"></ion-input>
+        </ion-item>
+        <app-error [errorMsg]="vCheck('user_login', '_INPUT')"></app-error>
+        <br>
+        <ion-button class="ion-no-margin ion-text-capitalize" size="large" expand="block" type="submit">Send Link</ion-button>
+      </form>
+      <br>
+      <ion-progress-bar mode="ios"></ion-progress-bar>
+      <p class="ion-text-center">Have an account already? Please go to <span class="_primary" (click)="changeView('LOGIN')"><u>Sign In</u></span></p>
+    </ng-template>
+  </ng-container>
+</div>

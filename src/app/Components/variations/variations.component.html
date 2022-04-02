@@ -1,0 +1,34 @@
+<div class="ion-padding fullWidth">
+  <form [formGroup]="sForm" (ngSubmit)="saveForm()">
+    <ng-container formArrayName="field">
+      <ng-container *ngFor="let X of sForm['controls'].field['controls']; let ix = index" formGroupName="{{ix}}">
+        <ion-card class="ion-no-margin ion-padding-horizontal ion-margin-vertical">
+          <ion-list>
+            <ion-item class="ion-no-padding" lines="none">
+              <ion-label position="stacked" class="ion-no-margin _black">Title</ion-label>
+              <ion-input autocapitalize="sentences"   class="myBorderInput" (keyup.enter)="saveForm()" formControlName="title" placeholder="Title"></ion-input>
+            </ion-item>
+            <app-error [errorMsg]="vCheck(X.controls, 'title','_INPUT')"></app-error>
+            <ion-item class="ion-no-padding" lines="none">
+              <ion-label position="stacked" class="ion-no-margin _black">Price</ion-label>
+              <ion-input autocapitalize="sentences"   type="number" min="0" class="myBorderInput" formControlName="percent" placeholder="0.00"></ion-input>
+            </ion-item>
+            <app-error [errorMsg]="vCheck(X.controls, 'percent','_INPUT')"></app-error>
+            <ion-item class="ion-no-padding" lines="none">
+              <ion-label position="stacked" class="ion-no-margin _black">Due Date </ion-label>
+              <ion-datetime class="myBorderInput" (keyup.enter)="saveForm()" formControlName="due_date" displayFormat="DD/MM/YYYY" placeholder="DD/MM/YYYY" [min]="helper.getCDT('YYYY-MM-DD')" [max]="helper.getCDT('YYYY-MM-DD', helper._MOMENT().add('20', 'year'))"></ion-datetime>
+            </ion-item>
+            <app-error [errorMsg]="vCheck(X.controls,'due_date', '_SELECT')"></app-error>
+            <ion-item class="ion-no-padding" lines="none">
+              <ion-label position="stacked" class="ion-no-margin _black">Description</ion-label>
+              <ion-textarea autocapitalize="sentences"  formControlName="description" rows="3" class="myBorderInput" placeholder="Description" ></ion-textarea>
+            </ion-item>
+              <ion-button slot="end" fill="clear" (click)="removeForm(ix)"><ion-icon class="marginInlineEnd16 ion-no-padding" name="trash"></ion-icon> Remove</ion-button>
+          </ion-list>
+        </ion-card>
+      </ng-container>
+    </ng-container>
+    <ion-button type="submit" class="btnSuccess" size="large" expand="block">Save Variations</ion-button>
+  </form>
+  <ion-button class="ion-no-margin ion-margin-vertical" size="large" expand="block" (click)="addNewForm()">ADD Variation</ion-button>
+</div>

@@ -1,0 +1,73 @@
+<app-header headerType="myJob" [scrollArea]="!!(!_USER)?scrollArea:null" [options]="{isFilter: !!(_USER), filterDis: progressBar, filterArr: filterArray, cFilter: filterByStatus, isSearchIco: !!(_USER && userType!==_UT.CLIENT && userType!==_UT.CONTRACTOR), isSearchIcoDis: progressBar, isSearchIcoDot: (searchByTitle || searchByClient), loadingPro: (!!(_USER) && progressBar), isBell: !!(_USER)}" (onTriggerBtn)="onTriggerBtn($event)" [showMsg]="showMsg"></app-header><!--TODO ____ isMoreDot-->
+<ion-content no-bounce scrollEvents #scrollArea>
+  <ng-container *ngIf="!_USER && !loadingUser">
+    <app-tab-login cssClassMain="ion-padding"></app-tab-login>
+  </ng-container>
+  <ng-container *ngIf="_USER && !loadingUser">
+    <ng-container *ngIf="isLoading">
+      <ion-list class="skeletonList">
+        <ion-item class="ion-no-margin" lines="none">
+          <ion-label class="ion-no-margin">
+            <ion-skeleton-text animated style="height: 25px; width: 30%;"></ion-skeleton-text>
+          </ion-label>
+          <ion-skeleton-text slot="end" animated style="height: 25px; width: 20%; margin-right: 16px"></ion-skeleton-text>
+        </ion-item>
+        <ion-item *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11]">
+          <ion-label>
+            <ion-skeleton-text animated style="height: 25px; width: 80%;"></ion-skeleton-text>
+            <ion-skeleton-text animated style="height: 25px; width: 50px; display: table; float: left; margin-right: 16px"></ion-skeleton-text>
+            <ion-skeleton-text animated style="height: 25px; width: 35%; display: table; float: left"></ion-skeleton-text>
+            <ion-row style="clear: both">
+              <ion-col class="ion-no-padding ion-align-self-center" size="4"><ion-skeleton-text animated style="height: 25px; width: 80%;"></ion-skeleton-text></ion-col>
+              <ion-col class="ion-no-padding ion-align-self-center" size="4"><ion-skeleton-text animated style="height: 25px; width: 70%; margin: 4px auto"></ion-skeleton-text></ion-col>
+              <ion-col class="ion-no-padding ion-align-self-center" size="4"><ion-skeleton-text animated style="height: 25px; width: 100%; border-radius: 50px"></ion-skeleton-text></ion-col>
+            </ion-row>
+          </ion-label>
+          <ion-skeleton-text class="marginInStart4" slot="end" animated style="height: 25px; width: 30px; margin-right: 16px"></ion-skeleton-text>
+        </ion-item>
+      </ion-list>
+    </ng-container>
+    <ng-container *ngIf="!isLoading && list.length">
+      <ion-list>
+        <ion-item class="itemMinH25" lines="none">
+          <ion-label class="ion-no-margin">All Quotes</ion-label>
+          <ion-button slot="end" fill="clear" (click)="navCtrl.navigateRoot(helper._AP.ESTIMATE)" *ngIf="userType !== _UT.CONTRACTOR">
+            <ion-icon name="add-circle-outline"></ion-icon>
+            New Quote
+          </ion-button>
+        </ion-item>
+        <ion-item-sliding *ngFor="let item of list">
+        <ion-item class="__white">
+          <ion-label (click)="quoteDetail(item.ID)">
+            <p [innerHTML]="item.title" (click)="quoteDetail(item.ID)"></p>
+            <p class="ion-no-margin _medium fullOpacity" *ngIf="item.client_name">{{item.client_name}}</p>
+            <!--<ion-button size="small" fill="clear" class="ion-no-margin ion-no-padding _black fullOpacity" [disabled]="!item.client_phone" [href]="'tel:'+item.client_phone"><ion-icon name="ios-call"></ion-icon>&nbsp;&nbsp;|&nbsp;&nbsp;</ion-button>-->
+            <!--<ion-button size="small" fill="clear" class="ion-no-margin noPaddingStart ion-text-capitalize _medium fullOpacity" disabled>{{item.client_name}}</ion-button>-->
+            <ion-row class="smallText">
+              <ion-col class="ion-no-padding ion-align-self-center" size="4">${{item.price | viewIn:'0' | formatter: '2'}}</ion-col> <!-- currency:'USD':'symbol':'1.2-2'-->
+              <ion-col class="ion-no-padding ion-align-self-center ion-text-center" size="4">{{item.date_formatted}}</ion-col>
+              <ion-col class="ion-no-padding ion-align-self-center ion-text-right" size="4">
+                <ion-chip class="ion-no-margin customChip xSmallText _white" [ngStyle]="{'background': 'var(--label-'+item.status_class+')'}">{{item.status}}</ion-chip>
+              </ion-col>
+            </ion-row>
+          </ion-label>
+          <ion-button size="small" fill="clear" class="marginInStart4 _black fullOpacity" [disabled]="!item.client_phone" [href]="'tel:'+item.client_phone"><ion-icon name="ios-call"></ion-icon></ion-button>
+
+        </ion-item>
+        <ion-item-options side="end" *ngIf="item.status!==QS.COMPLETED && item.status!==QS.CLOSED && userType===_UT.AGENT">
+          <ion-item-option color="danger" (click)="cancelQuote(item.ID)">Cancel</ion-item-option>
+        </ion-item-options>
+        </ion-item-sliding>
+      </ion-list>
+      <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMore($event)">
+        <ion-infinite-scroll-content loadingText="Hold on, loading content"></ion-infinite-scroll-content>
+      </ion-infinite-scroll>
+    </ng-container>
+    <ng-container *ngIf="!isLoading && !list.length">
+      <div class="noDataDiv">
+        <ion-icon color="primary" [src]="helper._IMG.PORTFOLIO1" mode="ios"></ion-icon>
+        <p>There are no projects yet.</p>
+      </div>
+    </ng-container>
+  </ng-container>
+</ion-content>

@@ -1,0 +1,55 @@
+<h3 class="ion-text-center xSmallMarginTop">Choose Your Project</h3>
+<ion-grid *ngIf="!isLoading && projectList?.length" class="loadingProjectList" >
+  <ng-container *ngFor="let p of projectList let i = index">
+    <ion-row *ngIf="i % 3 === 0">
+      <ion-col size="4" *ngIf="i < projectList.length" (click)="pushPage(projectList[i])">
+        <img alt="img" [lazyLoad]="projectList[i].acf.template_image" [src]="helper._IMG.DEFAULT_NO_IMG" [errorImage]="helper._IMG.DEFAULT_NO_IMG" />
+        <ion-item class="ion-no-margin ion-no-padding itemMinH20" lines="none">
+          <ion-label class="ion-no-margin ion-text-center font13" [innerHTML]="projectList[i].title.rendered"></ion-label>
+        </ion-item>
+      </ion-col>
+      <ion-col size="4" *ngIf="i+1 < projectList.length" (click)="pushPage(projectList[i+1])">
+        <img alt="img" [lazyLoad]="projectList[i+1].acf.template_image" [src]="helper._IMG.DEFAULT_NO_IMG" [errorImage]="helper._IMG.DEFAULT_NO_IMG" />
+        <ion-item class="ion-no-margin ion-no-padding itemMinH20" lines="none">
+          <ion-label class="ion-no-margin ion-text-center font13" [innerHTML]="projectList[i+1].title.rendered"></ion-label>
+        </ion-item>
+      </ion-col>
+      <ion-col size="4" *ngIf="i+2 < projectList.length" (click)="pushPage(projectList[i+2])">
+        <img alt="img" [lazyLoad]="projectList[i+2].acf.template_image" [src]="helper._IMG.DEFAULT_NO_IMG" [errorImage]="helper._IMG.DEFAULT_NO_IMG" />
+        <ion-item class="ion-no-margin ion-no-padding itemMinH20" lines="none">
+          <ion-label class="ion-no-margin ion-text-center font13" [innerHTML]="projectList[i+2].title.rendered"></ion-label>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ng-container>
+</ion-grid>
+<ng-container *ngIf="!isLoading && !projectList?.length">
+  <div class="noDataDiv">
+    <ion-icon [src]="helper._IMG.PORTFOLIO1"></ion-icon>
+    <p>No project found.</p>
+  </div>
+</ng-container>
+<ion-grid *ngIf="isLoading" class="loadingProjectList skeletonList">
+  <ng-container *ngFor="let p of [1,2,3,4,5,6,7,8,9,10,11] let i = index">
+    <ion-row *ngIf="i % 3 === 0">
+      <ion-col size="4" *ngIf="i < 12">
+        <img alt="img" [src]="helper._IMG.DEFAULT_NO_IMG" />
+        <ion-item class="ion-no-margin ion-no-padding itemMinH20" lines="none">
+          <ion-skeleton-text animated width="70%" class="centerMargin"></ion-skeleton-text>
+        </ion-item>
+      </ion-col>
+      <ion-col size="4" *ngIf="i+1 < 12">
+        <img alt="img" [src]="helper._IMG.DEFAULT_NO_IMG" />
+        <ion-item class="ion-no-margin ion-no-padding itemMinH20" lines="none">
+          <ion-skeleton-text animated width="70%" class="centerMargin"></ion-skeleton-text>
+        </ion-item>
+      </ion-col>
+      <ion-col size="4" *ngIf="i+2 < 12">
+        <img alt="img" [src]="helper._IMG.DEFAULT_NO_IMG" />
+        <ion-item class="ion-no-margin ion-no-padding itemMinH20" lines="none">
+          <ion-skeleton-text animated width="70%" class="centerMargin"></ion-skeleton-text>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ng-container>
+</ion-grid>

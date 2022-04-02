@@ -1,0 +1,31 @@
+.myAvatar{
+  margin-top: 0;
+  margin-bottom: 0;
+  img{
+    width: 100%;
+    object-fit: contain;
+    // padding: 25%;
+    // background: var(--ion-color-primary);
+  }
+  img.ng-lazyloaded {
+    object-fit: contain !important;
+    padding: 0 !important;
+  }
+  img.ng-failed-lazyloaded {
+    object-fit: fill !important;
+    // padding: 25% !important;
+  }
+}
+.user-type-chip{
+  padding-top: 2px;
+  padding-bottom: 2px;
+  height: 24px;
+}
+.uploadBtn{
+  margin-bottom: 16px;
+  margin-top: 4px;
+  height: 56px;
+}
+.fullWidthSelect{
+  min-width: 100% !important;
+}

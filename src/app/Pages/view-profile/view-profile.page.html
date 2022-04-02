@@ -1,0 +1,84 @@
+<ion-header mode="md" class="noHeaderBorder">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button mode="md"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-no-padding headTitle">View Profile</ion-title>
+    <ion-button size="small" slot="end" fill="clear" class="myRippleBtn btnWithDot" (click)="btn('Message')">
+      <ion-icon name="mail"></ion-icon>
+      <ion-text *ngIf="_MSG?.length" color="success">•</ion-text>
+    </ion-button>
+    <ion-button size="small" slot="end" fill="clear" class="myRippleBtn btnWithDot" (click)="btn('NotiBell')">
+      <ion-icon [src]="helper._IMG.NOTIFICATION"></ion-icon>
+      <ion-text *ngIf="_NOTIF?.length" color="success">•</ion-text>
+    </ion-button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content no-bounce>
+  <ng-container *ngIf="!personal || loadingUser">
+    <ion-list class="ion-padding-horizontal" lines="none">
+      <ion-item class="ion-no-padding" lines="none">
+        <ion-thumbnail class="avatarSkeleton" slot="start">
+          <div><ion-skeleton-text animated style="width: 60px; height: 60px; border-radius: 100px;"></ion-skeleton-text></div>
+        </ion-thumbnail>
+        <ion-skeleton-text animated style="width: 100%; height: 60px"></ion-skeleton-text>
+      </ion-item>
+      <ion-item class="ion-no-padding" lines="none" *ngFor="let l of [1,2,3,4,5]">
+        <ion-label color="primary" position="stacked">
+          <ion-skeleton-text animated style="width: 100px; height: 16px"></ion-skeleton-text>
+        </ion-label>
+        <p class="ion-no-margin" style="width: 100%;"><ion-skeleton-text animated style="height: 40px; border-radius: 3px"></ion-skeleton-text></p>
+      </ion-item>
+    </ion-list>
+  </ng-container>
+  <ng-container *ngIf="personal && !loadingUser">
+    <ion-item class="innerPaddingEnd" lines="full">
+      <ion-avatar slot="start" class="myAvatar">
+        <img alt="user" [src]="helper._IMG.DEFAULT_LOADING" [errorImage]="helper._IMG.DEFAULT_USER" [lazyLoad]="personal.profile_img">
+      </ion-avatar>
+      <ion-label class="ion-no-margin">
+        <h2>{{personal.first_name}} {{personal.last_name}}</h2>
+        <p>{{personal.email}}</p>
+        <p>{{personal.phone}}</p>
+        <p>{{personal.address}}</p>
+      </ion-label>
+    </ion-item>
+    <h5 class="ion-padding-horizontal">Available Quotes</h5>
+    <ng-container *ngIf="QuotesD?.length">
+      <div class="ion-padding-horizontal">
+        <app-image-row class="uploaded-attachments" [filesItems]="QuotesD" imgKey="image" imgTitleKey="name"></app-image-row>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="!QuotesD?.length">
+      <div class="ion-padding noDataDiv">
+        <!--<ion-icon color="primary" [src]="helper._IMG.PORTFOLIO1" mode="ios"></ion-icon>-->
+        <p>There are no quotes.</p>
+      </div>
+    </ng-container>
+    <h5 class="ion-padding-horizontal">Reviews</h5>
+    <ng-container *ngIf="ReviewsD?.length">
+      <div class="ion-padding-horizontal">
+      <ion-list>
+        <ion-item class="ion-no-padding" lines="full" *ngFor="let rr of ReviewsD">
+          <ion-avatar slot="start" class="myAvatar">
+            <img alt="user" [src]="helper._IMG.DEFAULT_LOADING" [errorImage]="helper._IMG.DEFAULT_USER" [lazyLoad]="rr.avatar">
+          </ion-avatar>
+          <ion-label class="ion-no-margin">
+            <p *ngIf="rr.fname">{{ rr.fname }} {{ rr.lname }}</p>
+            <p class="ion-text-capitalize ion-text-wrap" *ngIf="rr.title">{{ rr.title }}</p>
+            <div class="starsWrap" *ngIf="rr.count" [innerHtml]="rr.count | rating"></div>
+            <p class="ion-text-capitalize ion-text-wrap" *ngIf="rr.review">{{ rr.review }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="!ReviewsD?.length">
+      <div class="ion-padding noDataDiv">
+        <!--<ion-icon color="primary" [src]="helper._IMG.PORTFOLIO1" mode="ios"></ion-icon>-->
+        <p>There are no reviews.</p>
+      </div>
+    </ng-container>
+  </ng-container>
+</ion-content>

@@ -1,0 +1,8 @@
+{
+  "name": "Houseace",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular",
+  "backButtonIcon": "ios-undo"
+}

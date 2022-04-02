@@ -1,0 +1,4 @@
+<ion-button slot="start" fill="clear" size="small" class="ion-no-margin myRippleBtn btnWithDot" [disabled]="isDisabled" (click)="onFilter()">
+  <ion-icon name="ios-funnel"></ion-icon>
+  <ion-text *ngIf="cFilterByStatus" color="success">•</ion-text>
+</ion-button>

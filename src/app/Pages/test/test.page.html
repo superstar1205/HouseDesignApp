@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button mode="md"></ion-back-button>
+    </ion-buttons>
+    <ion-title>test</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="sf">
+  <ion-input autocapitalize="sentences"
+      formControlName="this_input"
+      mask="0*.00"
+      [dropSpecialCharacters]="false"
+      type="text"
+  ></ion-input>
+  </form>
+  <ion-input autocapitalize="sentences"
+      formControlName="" value=""
+      mask="0*.00"
+      [dropSpecialCharacters]="false"
+      type="text"
+  ></ion-input>
+  <app-image-row [filesItems]="data" imgKey="link" imgTitleKey="title"></app-image-row>
+</ion-content>

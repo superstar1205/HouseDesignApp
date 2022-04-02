@@ -1,0 +1,9 @@
+ion-tabs{
+  ion-tab-bar, ion-tab-button{
+    --background: var(--ion-color-primary);
+    --color: var(--ion-color-secondary);
+    ion-tab-button{
+      --color-selected: var(--ion-color-secondary-contrast);
+    }
+  }
+}

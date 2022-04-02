@@ -1,0 +1,49 @@
+.slidesImages{
+  ion-slide{
+    min-width: 120px !important;
+    min-height: 120px !important;
+    height: 120px !important;
+    .slideImagesCard{
+      height: 120px !important;
+      width: 120px !important;
+      position: relative;
+      border-radius: 5px;
+      background: var(--ion-color-medium-tint);
+      img{
+        padding: 35%;
+        object-fit: fill;
+        height: 100%;
+        width: 100%;
+      }
+      img.ng-lazyloaded {
+        object-fit: cover !important;
+        padding: 0 !important;
+      }
+      img.ng-failed-lazyloaded {
+        object-fit: fill !important;
+        padding: 35% !important;
+      }
+      .slideTrashBtn{
+        position: absolute;
+        right: 0;
+        top: 0;
+        height: 1.4em;
+        z-index: 9;
+        ion-icon{
+          background: var(--ion-color-white);
+          border-radius: 50px !important;
+        }
+      }
+      .myTitle{
+        position: absolute;
+        margin-bottom: 0;
+        bottom: 0;
+        background: var(--ion-color-white-contrast);
+        color: var(--ion-color-white) !important;
+        width: 100%;
+        opacity: 0.9;
+        z-index: 10;
+      }
+    }
+  }
+}

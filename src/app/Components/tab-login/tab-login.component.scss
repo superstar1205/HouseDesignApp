@@ -1,0 +1,12 @@
+ion-progress-bar{
+  height: 2px !important;
+}
+.label-stacked.ion-color-primary{
+  --ion-color-base: var(--ion-color-secondary) !important;
+  --ion-color-base-rgb: var(--ion-color-secondary-rgb) !important;
+  --ion-color-contrast: var(--ion-color-secondary-contrast) !important;
+  --ion-color-contrast-rgb: var(--ion-color-secondary-contrast-rgb) !important;
+  --ion-color-shade: var(--ion-color-secondary-shade) !important;
+  --ion-color-tint: var(--ion-color-secondary-tint) !important;
+  z-index: 9;
+}

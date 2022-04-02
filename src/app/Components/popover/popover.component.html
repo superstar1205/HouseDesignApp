@@ -1,0 +1,10 @@
+<ng-container *ngIf="popOverBtns && popOverBtns.length">
+  <ion-item button [lines]="item.lines?'full':'none'" [ngClass]="item?.cssClass" (click)="dismissPopover(item.val)" *ngFor="let item of popOverBtns">
+    <ion-icon [name]="item.icon" *ngIf="item.icon || item.icon_src" [src]="item.icon_src" slot="start" [color]="item?.cssClass?'':'primary'" [ngClass]="'smallMarginRight '+item?.cssClass"></ion-icon>
+    <ion-label class="ion-no-margin ion-text-capitalize">
+      <p [ngClass]="item?.cssClass?item.cssClass:'_primary'">{{item.title}}</p>
+      <p *ngIf="item?.subTitle" class="ion-no-margin subtitle xSmallText">{{item.subTitle}}</p>
+    </ion-label>
+    <ion-text class="ion-no-margin redDot" slot="end" *ngIf="item.isDot">•</ion-text>
+  </ion-item>
+</ng-container>

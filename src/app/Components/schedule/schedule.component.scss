@@ -1,0 +1,18 @@
+.RelativeContent{
+  position: relative;
+  ion-progress-bar{
+    z-index: 0 !important;
+  }
+}
+p.ORScheduleOptions {
+  width: 30px;
+  background: var(--ion-color-white) !important;
+  --background: var(--ion-color-white) !important;
+  text-align: center;
+  opacity: 0.6;
+}
+.templateSelect{
+  ion-select{
+    max-width: 100%;
+  }
+}

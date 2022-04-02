@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-button slot="start" fill="clear" class="ion-no-margin myRippleBtn" (click)="dismissModal()">
+      <ion-icon name="arrow-back"></ion-icon>
+    </ion-button>
+    <!--<ion-button slot="end" fill="clear" class="ion-no-margin myRippleBtn" (click)="downloadFile()">
+      <ion-icon name="download"></ion-icon>
+    </ion-button>-->
+    <ion-title>File</ion-title>
+  </ion-toolbar>
+  <ion-toolbar *ngIf="showSlides">
+    <ion-slides [options]="slidesOptions" *ngIf="filesArray.length" (ionSlideWillChange)="slideChange($event)">
+      <ion-slide *ngFor="let i of filesArray">
+        <img alt="img" [src]="IMGS.DEFAULT_LOADING" [errorImage]="IMGS.DEFAULT_NO_IMG" [lazyLoad]="i.url">
+        <div class="myTitle ion-text-capitalize" *ngIf="i.title"><p class="ion-text-center">{{i.title}}</p></div>
+      </ion-slide>
+    </ion-slides>
+  </ion-toolbar>
+</ion-header>

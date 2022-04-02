@@ -1,0 +1,250 @@
+<ion-header [ngClass]="headFull ? 'borderBottomHeader': 'noHeaderBorder'">
+  <ion-toolbar [ngClass]="headFull ? '': 'itemMinH35'">
+    <ion-button slot="end" fill="clear" class="ion-no-margin myRippleBtn" (click)="dismissModal()">
+      <ion-icon name="md-close"></ion-icon>
+    </ion-button>
+    <ion-title>{{headerTitle}}</ion-title>
+  </ion-toolbar>
+  <ion-toolbar *ngIf="modalType == 'addPeople'">
+    <ion-title class="ion-no-padding">
+      <ion-searchbar class="mySearchBar" [(ngModel)]="searchTxt" (ionChange)="setFilterItems()"></ion-searchbar>
+    </ion-title>
+  </ion-toolbar>
+  <ion-toolbar *ngIf="modalType == 'addPeople'" class="cPriceToolbar">
+    <ion-title *ngIf="cMData.uType === 'contractor'" class="priceTitle">
+      <form [formGroup]="cModalForm" (ngSubmit)="onSave()">
+        <ion-item class="ion-no-padding" lines="none">
+          <ion-input autocapitalize="sentences"   type="tel" class="myBorderInput contractorPriceInput" formControlName="this_input" placeholder="Enter Contractor's price" min="0">
+            <ion-icon name="logo-usd" class="dollar-icon-left"></ion-icon>
+          </ion-input>
+        </ion-item>
+        <app-error [errorMsg]="vCheck('this_input','_PATTERN_NUM_MIN_MAX', {min: 0})"></app-error>
+      </form>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content no-bounce>
+  <ng-container [ngSwitch]="modalType">
+    <ng-template ngSwitchCase="notifications">
+      <ng-container *ngIf="cMData?.length">
+        <ion-list class="ion-no-padding">
+          <ng-container *ngFor="let t of _NT">
+            <ng-container *ngIf="(cMData | filterArr:{filterKey: 'type', filterVal: t}).length">
+              <ion-item-divider class="itemMinH25 __white-tintE noBorderBottom">
+                <ion-icon slot="start" size="small" name="ios-notifications" class="_black ion-no-margin marginInlineEnd16"></ion-icon>
+                <ion-label class="ion-text-uppercase ion-no-margin _light-tint">{{t}}</ion-label>
+              </ion-item-divider>
+              <div class="ion-padding-horizontal">
+                <ion-item detail="true" *ngFor="let ni of (cMData | filterArr:{filterKey: 'type', filterVal: t}); let last = last" class="ion-no-padding" [lines]="last?'none':'full'" (click)="onSave(ni)">
+                  <ion-label>
+                    <p class="ion-text-wrap _secondary">{{ni?.text}}</p>
+                    <ion-note class="smallText">{{ni?.date}}</ion-note>
+                  </ion-label>
+                </ion-item>
+              </div>
+            </ng-container>
+          </ng-container>
+        </ion-list>
+      </ng-container>
+      <ng-container *ngIf="!cMData?.length">
+        <div class="ion-padding noDataDiv">
+          <ion-icon color="primary" [src]="helper._IMG.NOTIFICATION" mode="ios"></ion-icon>
+          <p>There are no new notifications.</p>
+        </div>
+      </ng-container>
+    </ng-template>
+    <ng-template ngSwitchCase="messages">
+      <ng-container *ngIf="cMData?.length">
+        <ion-list class="ion-padding-horizontal">
+            <ion-item class="ion-no-padding" detail="true" lines="full" *ngFor="let rr of cMData" (click)="onSave(rr)">
+              <ion-label>
+                <p class="ion-text-wrap _secondary">{{rr?.text}}</p>
+                <ion-note class="smallText">{{rr?.date}} {{rr?.time}}</ion-note>
+              </ion-label>
+            </ion-item>
+        </ion-list>
+      </ng-container>
+      <ng-container *ngIf="!cMData?.length">
+        <div class="ion-padding noDataDiv">
+          <ion-icon color="primary" name="mail" mode="ios"></ion-icon>
+          <p>There are no new Messages.</p>
+        </div>
+      </ng-container>
+    </ng-template>
+    <ng-template ngSwitchCase="searchQuotes">
+      <form (ngSubmit)="onSave()" action="." class="ion-margin-top ion-padding-horizontal">
+        <ion-searchbar mode="md" placeholder="Search by Title" class="mySearchBar" name="searchText" [(ngModel)]="cMData.searchByTitle"></ion-searchbar>
+      </form>
+      <form (ngSubmit)="onSave()" action="." class="ion-margin-bottom ion-padding-horizontal">
+        <ion-searchbar mode="md" placeholder="Search by Client" class="mySearchBar" name="searchText" [(ngModel)]="cMData.searchByClient"></ion-searchbar>
+      </form>
+    </ng-template>
+    <ng-template ngSwitchCase="addNewClient">
+      <p class="infoText ion-no-margin ion-padding-start ion-padding-top">**User will receive all necessary data to their email!</p>
+      <form [formGroup]="cModalForm" (ngSubmit)="onSave()">
+        <ion-input autocapitalize="sentences"   type="hidden" formControlName="user_type"></ion-input>
+        <ion-list class="ion-no-padding ion-padding-horizontal">
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-label position="stacked">First Name<span class="_danger">*</span></ion-label>
+            <ion-input autocapitalize="sentences"   class="myBorderInput" (keyup.enter)="onSave()" formControlName="registerFirstName" placeholder="Enter First Name"></ion-input>
+          </ion-item>
+          <app-error [errorMsg]="vCheck('registerFirstName','_INPUT')"></app-error>
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-label position="stacked">Last Name<span class="_danger">*</span></ion-label>
+            <ion-input autocapitalize="sentences"   class="myBorderInput" (keyup.enter)="onSave()" formControlName="registerLastName" placeholder="Enter Last Name"></ion-input>
+          </ion-item>
+          <app-error [errorMsg]="vCheck('registerLastName','_INPUT')"></app-error>
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-label position="stacked">Full Address<span class="_danger">*</span></ion-label>
+            <ion-input autocapitalize="sentences"   class="myBorderInput" (keyup.enter)="onSave()" formControlName="registerAddress" placeholder="Enter Address"></ion-input>
+          </ion-item>
+          <app-error [errorMsg]="vCheck('registerAddress','_INPUT')"></app-error>
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-label position="stacked">Phone<span class="_danger">*</span></ion-label>
+            <ion-input autocapitalize="sentences"   class="myBorderInput" (keyup.enter)="onSave()" formControlName="registerPhone" placeholder="Enter Phone" type="tel"></ion-input>
+          </ion-item>
+          <app-error [errorMsg]="vCheck('registerPhone','_INPUT')"></app-error>
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-label position="stacked">Email<span class="_danger">*</span></ion-label>
+            <ion-input autocapitalize="sentences"   class="myBorderInput" (keyup.enter)="onSave()" formControlName="registerEmail" placeholder="Enter Email"></ion-input>
+          </ion-item>
+          <app-error [errorMsg]="vCheck('registerEmail','_EMAIL')"></app-error>
+          <!--<ion-item class="ion-no-padding" lines="none">
+            <ion-input autocapitalize="sentences"   class="myBorderInput" (keyup.enter)="onSave()" formControlName="registerPassword" placeholder="Choose Password" type="password" [clearInput]="false"></ion-input>
+          </ion-item>
+          <app-error [errorMsg]="vCheck('registerPassword','_PASSWORD')"></app-error>
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-input autocapitalize="sentences"   class="myBorderInput" (keyup.enter)="onSave()" formControlName="registerPasswordCheck" placeholder="Re-type Password" type="password"></ion-input>
+          </ion-item>
+          <app-error [errorMsg]="vCheck('registerPasswordCheck','_PASSWORD')"></app-error>-->
+        </ion-list>
+      </form>
+    </ng-template>
+    <ng-template ngSwitchCase="manageProjectActions">
+      <form [formGroup]="cModalForm" (ngSubmit)="onSave()">
+        <ion-list class="ion-no-padding ion-padding-horizontal">
+          <ng-container *ngIf="cMData.action === 'change_title'">
+            <ion-item class="ion-no-padding" lines="none">
+              <ion-label position="stacked">{{cMData.inputLabel}}<span class="_danger">*</span></ion-label>
+              <ion-textarea autocapitalize="sentences"  rows="3" class="myBorderInput" formControlName="this_input" placeholder="Enter quote title"></ion-textarea>
+            </ion-item>
+            <app-error [errorMsg]="vCheck('this_input','_INPUT')"></app-error>
+          </ng-container>
+          <ng-container *ngIf="cMData.action === 'timeframe'">
+            <ion-item class="ion-no-padding" lines="none">
+              <ion-label position="stacked">{{cMData.inputLabel}}<span class="_danger">*</span></ion-label>
+              <ion-select class="myBorderInput" (keyup.enter)="onSave()" formControlName="this_input" placeholder="Select Timeframe" interface="action-sheet">
+                <ion-select-option *ngFor="let opt of cMData.timeframe" [value]="opt.timeframe">{{opt.timeframe}}</ion-select-option>
+              </ion-select>
+            </ion-item>
+            <app-error [errorMsg]="vCheck('this_input','_SELECT')"></app-error>
+          </ng-container>
+          <ng-container *ngIf="cMData.action === 'start_date'">
+            <ion-item class="ion-no-padding" lines="none">
+              <ion-label position="stacked">{{cMData.inputLabel}}<span class="_danger">*</span></ion-label>
+              <ion-datetime class="myBorderInput" (keyup.enter)="onSave()" formControlName="this_input" displayFormat="DD/MM/YYYY" placeholder="DD/MM/YYYY" [min]="helper.getCDT('YYYY-MM-DD')" [max]="helper.getCDT('YYYY-MM-DD', helper._MOMENT().add('20', 'year'))"></ion-datetime>
+            </ion-item>
+            <app-error [errorMsg]="vCheck('this_input','_SELECT')"></app-error>
+          </ng-container>
+          <ng-container *ngIf="cMData.action === 'change_status'">
+            <ion-input autocapitalize="sentences"   hidden formControlName="input_extra"></ion-input>
+            <ion-item class="ion-no-padding" lines="none">
+              <ion-label position="stacked">{{cMData.inputLabel}}<span class="_danger">*</span></ion-label>
+              <ion-select class="myBorderInput" (keyup.enter)="onSave()" formControlName="this_input" placeholder="Select Status" interface="action-sheet">
+                <ion-select-option *ngFor="let opt of cMData.statusArr" [value]="opt.val">{{opt.title}}</ion-select-option>
+              </ion-select>
+            </ion-item>
+            <app-error [errorMsg]="vCheck('this_input','_SELECT')"></app-error>
+          </ng-container>
+        </ion-list>
+      </form>
+    </ng-template>
+    <ng-template ngSwitchCase="addProjectComment">
+      <ion-list class="ion-padding-horizontal">
+        <form [formGroup]="cModalForm" (keydown.enter)="$event.preventDefault()" (ngSubmit)="onSave()">
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-textarea autocapitalize="sentences" rows="3" class="myBorderInput" (keyup.enter)="onSave()" formControlName="this_input" [placeholder]="cMData.placeholder"></ion-textarea>
+          </ion-item>
+          <app-error [errorMsg]="vCheck('this_input','_INPUT')"></app-error>
+        </form>
+        <ion-button fill="clear" class="ion-text-capitalize ion-no-margin noPaddingStart" [disabled]="tempFileArr.length >= 5" (click)="otherBtn()">
+          <ion-icon [src]="helper._IMG.ADD_IMG"></ion-icon>&nbsp;Upload File(s)
+        </ion-button>
+        <app-image-row [filesItems]="tempFileArr" canDelete="true" (onClickTrigger)="onTempDeleteFile($event)"></app-image-row>
+      </ion-list>
+    </ng-template>
+    <ng-template ngSwitchCase="manageSchedules">
+      <app-schedule (onTrigger)="onSave($event)" [sData]="cMData?.scheduleData" [projectScheduleTemplate]="cMData?.projectScheduleTemplate" [projectId]="cMData?.projectId" [userId]="cMData.userId"></app-schedule>
+    </ng-template>
+    <ng-template ngSwitchCase="adjustMilestone">
+      <form [formGroup]="cModalForm" (ngSubmit)="onSave()">
+        <ion-list class="ion-no-padding ion-padding-horizontal">
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-label position="stacked" class="ion-no-margin _black">Title</ion-label>
+            <ion-input autocapitalize="sentences"   type="text" class="myBorderInput" formControlName="title" placeholder="Title"></ion-input>
+          </ion-item>
+          <app-error [errorMsg]="vCheck('title','_INPUT')"></app-error>
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-label position="stacked" class="ion-no-margin _black">Price</ion-label>
+            <ion-input autocapitalize="sentences"   type="number" min="0" class="myBorderInput" formControlName="price" placeholder="0.00"></ion-input>
+          </ion-item>
+          <app-error [errorMsg]="vCheck('price','_INPUT')"></app-error>
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-label position="stacked" class="ion-no-margin _black">Description</ion-label>
+            <ion-textarea autocapitalize="sentences" rows="3" class="myBorderInput" formControlName="description" placeholder="Description"></ion-textarea>
+          </ion-item>
+        </ion-list>
+      </form>
+    </ng-template>
+    <ng-template ngSwitchCase="manageVariations">
+      <app-variations (onTrigger)="onSave($event)" [vData]="cMData?.variationData" [projectId]="cMData?.projectId" [userId]="cMData.userId"></app-variations>
+    </ng-template>
+    <ng-template ngSwitchCase="addPeople">
+      <ng-container *ngIf="cMData?.udata?.length">
+        <ng-container *ngIf="filterList?.length">
+          <ion-list>
+            <ion-radio-group>
+              <ion-item (click)="cMData.selectedUser = r.user_id" lines="none" button detail="false"  *ngFor="let r of filterList">
+                <ion-label class="ion-no-margin _black ion-text-wrap smallText">{{r ? (r?.first_name+' '+r?.last_name+' ('+r?.user_email+')'):null}}</ion-label>
+                <ion-radio class="marginInlineEnd16" mode="md" slot="start" [value]="r.user_id"></ion-radio>
+              </ion-item>
+            </ion-radio-group>
+          </ion-list>
+        </ng-container>
+        <ng-container *ngIf="!filterList?.length">
+          <div class="noDataDiv">
+            <p>No Results Found For Your Search</p>
+          </div>
+        </ng-container>
+      </ng-container>
+    </ng-template>
+    <ng-template ngSwitchCase="editContractorPrice">
+      <form [formGroup]="cModalForm" (ngSubmit)="onSave()">
+        <ion-list class="ion-no-padding ion-padding-horizontal">
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-label position="stacked" class="ion-no-margin _black">Edit {{cMData.contractor.user_firstname | viewIn: ' '}} {{ cMData.contractor.user_lastname | viewIn: ' '}} Price</ion-label>
+            <ion-input autocapitalize="sentences" type="tel" class="myBorderInput contractorPriceInput" formControlName="this_input" placeholder="Edit Price" min="0">
+              <ion-icon name="logo-usd" class="dollar-icon-left"></ion-icon>
+            </ion-input>
+          </ion-item>
+          <app-error [errorMsg]="vCheck('this_input','_PATTERN_NUM_MIN_MAX', {min: 0})"></app-error>
+        </ion-list>
+      </form>
+    </ng-template>
+    <ng-template ngSwitchCase="addNewScope">
+      <app-quotes [_USER]="cMData?._USER" [isLoading]="cMData?.isLoading" [projectList]="cMData?.projectList" [timeframe]="cMData?.timeframe" [projectId]="cMData?.projectId" (onPushPageTrigger)="onSave($event)"></app-quotes>
+    </ng-template>
+    <ng-template ngSwitchDefault></ng-template>
+  </ng-container>
+</ion-content>
+<ion-footer *ngIf="showFootBtn>0">
+  <ng-container *ngIf="showFootBtn===1">
+    <ion-button type="button" class="ion-no-margin noBorderRadius" expand="full" color="primary" (click)="onSave()">{{footBtnTxt}}</ion-button>
+  </ng-container>
+  <ng-container *ngIf="showFootBtn===2">
+    <ion-row class="btnBottom">
+      <ion-button class="ion-no-margin ion-no-padding ion-text-capitalize halfWidth noBorderRadius dangerBtn" expand="full" (click)="dismissModal()">No</ion-button>
+      <ion-button class="ion-no-margin ion-no-padding ion-text-capitalize halfWidth noBorderRadius" expand="full" (click)="onSave()">Yes</ion-button>
+    </ion-row>
+  </ng-container>
+</ion-footer>

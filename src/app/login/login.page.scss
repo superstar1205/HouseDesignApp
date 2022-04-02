@@ -1,0 +1,24 @@
+ion-content{
+  --background: var(--ion-color-primary);
+  ion-item{
+    --background: var(--ion-color-primary);
+  }
+  ion-input{
+    --color: var(--ion-color-white);
+  }
+  ion-select{
+    --padding-start: 0 !important;
+    --placeholder-color: var(--ion-color-white) !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    color: var(--ion-color-white) !important;
+  }
+  ion-progress-bar{
+    height: .5px;
+  }
+  .logo-img{
+    width: 50% !important;
+    margin: 0 auto !important;
+  }
+}
+

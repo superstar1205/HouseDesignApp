@@ -1,0 +1,28 @@
+<!--<ng-masonry-grid
+    [masonryOptions]="{ transitionDuration: '0.8s', gutter: 5 }"
+    [useAnimation]="true"
+    [scrollAnimationOptions]="{ animationEffect: 'effect-3', minDuration : 0.4, maxDuration : 0.7 }">
+  <ng-masonry-grid-item id="{{'masonry-item-'+i}}" *ngFor="let img of masonryItems; let i = index;">
+    <ng-container *ngIf="canDelete">
+      <ion-button fill="clear" class="slideTrashBtn ion-no-margin ion-no-padding" (click)="onClickBtn('delete', {imgIndex: i, img: img})">
+        <ion-icon class="_danger" name="md-close-circle"></ion-icon>
+      </ion-button>
+    </ng-container>
+    <img alt="No image" [src]="_IMG.DEFAULT_LOADING" [errorImage]="_IMG.DEFAULT_NO_IMG" [lazyLoad]="img[imgKey]">
+  </ng-masonry-grid-item>
+</ng-masonry-grid>-->
+<ng-container *ngIf="filesItems && filesItems.length">
+  <ion-slides class="slidesImages" pager="false" [options]="slidesOptions">
+    <ion-slide *ngFor="let img of filesItems; let imgIndex = index">
+      <ion-card class="slideImagesCard ion-no-margin">
+        <ng-container *ngIf="canDelete">
+          <ion-button fill="clear" class="slideTrashBtn ion-no-margin ion-no-padding" (click)="onClickBtn('delete', {imgIndex: imgIndex, img: img})">
+            <ion-icon class="_danger" name="md-close-circle"></ion-icon>
+          </ion-button>
+        </ng-container>
+        <img alt="img" (click)="onViewFile(imgIndex)" [src]="_IMG.DEFAULT_NO_IMG" [errorImage]="_IMG.DEFAULT_NO_IMG" [lazyLoad]="img[imgKey]">
+        <p class="ion-no-margin ion-text-center ion-text-capitalize xxSmallText myTitle" *ngIf="imgTitleKey">{{img[imgTitleKey]}}</p>
+      </ion-card>
+    </ion-slide>
+  </ion-slides>
+</ng-container>

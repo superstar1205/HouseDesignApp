@@ -1,0 +1,549 @@
+<ion-header mode="md" class="noHeaderBorder">
+  <ion-toolbar [appScrollVanish]="scrollVanish">
+    <ion-buttons slot="start">
+      <ion-back-button mode="md"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-no-padding headTitle">
+      Project Detail
+      <p class="_primary ion-no-margin smallText">{{data?.project_total | currency:'USD':'symbol':'1.2-2'}}</p>
+
+      <!--<ion-text color="primary" class="ion-float-end smallText">{{data?.project_total | currency:'USD':'symbol':'1.2-2'}}</ion-text>-->
+    </ion-title>
+    <ion-button [disabled]="!data" size="small" slot="end" fill="clear" class="myRippleBtn" (click)="btn('removeProject')" *ngIf="(userType === _UT.HEAD_CONTRACTOR || userType === _UT.AGENT)">
+      <ion-icon name="md-trash"></ion-icon>
+    </ion-button>
+    <ion-button [disabled]="!data" size="small" slot="end" fill="clear" class="myRippleBtn btnWithDot" (click)="btn('_MESSAGE')">
+      <ion-icon name="mail"></ion-icon>
+      <ion-text *ngIf="_MSG?.length" color="success">•</ion-text>
+    </ion-button>
+    <ion-button [disabled]="!data" size="small" slot="end" fill="clear" class="myRippleBtn btnWithDot" (click)="btn('NotiBell')">
+      <ion-icon [src]="helper._IMG.NOTIFICATION"></ion-icon>
+      <ion-text *ngIf="_ACTIVITIES.length" color="success">•</ion-text>
+    </ion-button>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-segment (ionChange)="onChangeSegment($event)" [value]="currentSegment" mode="md">
+      <ion-segment-button mode="md" [value]="sg.val" *ngFor="let sg of _SEGMENTS" [ngClass]="(currentSegment === sg.val) ? 'segment-button-checked': ''">
+        <ion-icon [name]="sg.iconName" [src]="sg.srcName"></ion-icon>
+      </ion-segment-button>
+    </ion-segment>
+    <ng-container>
+      <ion-item  class="ion-no-margin ion-no-padding itemMinH20" lines="full" *ngIf="data?.project_team?.length && showTeams">
+        <ion-label class="ion-no-padding">
+          <h2 class="ion-padding-start">Team</h2>
+          <ion-slides [options]="{initialSlide: 0, speed: 1000, slidesPerView: 3.5, pagination: false}" style="height: 100%;">
+            <ion-slide *ngFor="let u of data.project_team; let i = index" class="ion-text-center">
+              <div class="team-div">
+                <ion-avatar>
+                  <img alt="user" [src]="helper._IMG.DEFAULT_NO_IMG" [errorImage]="helper._IMG.DEFAULT_USER" [lazyLoad]="u.user_avatar">
+                </ion-avatar>
+                <ng-container *ngIf="userType === _UT.HEAD_CONTRACTOR || userType === _UT.AGENT">
+                  <ion-button *ngIf="(u?.user_role === _UT.SUPPLIER || u?.user_role === _UT.CONTRACTOR || u?.user_role === _UT.AGENT)" fill="clear" size="small" class="ion-no-margin ion-no-padding floating-trash-icon" (click)="btn('removeTeamUser', u)"><ion-icon name="close" class="_white"></ion-icon></ion-button>
+                </ng-container>
+                <ion-button fill="clear" class="ion-no-margin ion-no-padding floating-call-icon" [href]="'tel:'+u.user_phone">
+                  <ion-icon name="ios-call" color="primary"></ion-icon>
+                </ion-button>
+                <p class="ion-text-center ion-no-margin xSmallText ion-text-wrap">{{u.role}}</p>
+                <p class="ion-text-center ion-no-margin xSmallText boldText ion-text-wrap">{{u.user_firstname}} {{u.user_lastname}}</p>
+                <!--<ng-container *ngIf="userType === _UT.HEAD_CONTRACTOR || userType === _UT.AGENT">
+                  <ion-button *ngIf="(u?.user_role === _UT.SUPPLIER || u?.user_role === _UT.CONTRACTOR || u?.user_role === _UT.AGENT)" size="small" class="ion-text-capitalize noShadowBtn" (click)="btn('removeTeamUser', u)">Delete</ion-button>
+                </ng-container>-->
+                <ion-button *ngIf="(u?.user_role === _UT.CONTRACTOR && userType !== _UT.CONTRACTOR && userType !== _UT.CLIENT)" size="small" class="ion-text-capitalize noShadowBtn" (click)="btn('editContractorPrice', u)">Edit Price</ion-button>
+              </div>
+            </ion-slide>
+          </ion-slides>
+        </ion-label>
+      </ion-item>
+    </ng-container>
+    <ng-container *ngIf="(currentSegment === 'Payments') && (userType === _UT.AGENT)">
+      <ion-segment (ionChange)="cPaymentTab = $event.detail.value" [value]="cPaymentTab" mode="md">
+        <ion-segment-button mode="md" [value]="pt.val" *ngFor="let pt of paymentTabSeg">
+          <ion-label>{{pt.title}}</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </ng-container>
+  </ion-toolbar>
+</ion-header>
+<ion-content [scrollEvents]="true" #scrollVanish>
+  <ng-container *ngIf="!data && isLoading">
+    <ion-list class="skeletonList">
+      <ion-item class="ion-no-margin itemMinH20" lines="none" *ngFor="let i of [1,2,3,4]">
+        <ion-label class="ion-no-margin">
+          <ion-skeleton-text class="ion-float-left" slot="start" animated style="height: 25px; width: 30%;"></ion-skeleton-text>
+          <ion-skeleton-text class="ion-float-right" slot="end" animated style="height: 25px; width: 30%;"></ion-skeleton-text>
+        </ion-label>
+        <ion-skeleton-text class="marginInStart4" slot="end" animated style="height: 25px; width: 30px; margin-right: 16px"></ion-skeleton-text>
+      </ion-item>
+      <ion-item class="ion-no-margin itemMinH20" lines="none">
+        <ion-label class="ion-no-margin">
+          <ion-skeleton-text slot="start" animated style="height: 25px; width: 30%;"></ion-skeleton-text>
+        </ion-label>
+        <ion-skeleton-text slot="end" animated style="height: 25px; width: 30px; margin-right: 16px"></ion-skeleton-text>
+      </ion-item>
+      <ion-item class="ion-no-margin itemMinH20" lines="none">
+          <ion-skeleton-text animated style="width: 100px; height: 16px"></ion-skeleton-text>
+      </ion-item>
+      <p class="ion-no-margin ion-padding-horizontal" style="width: 100%;"><ion-skeleton-text animated style="height: 100px; border-radius: 3px"></ion-skeleton-text></p>
+      <p class="ion-no-margin ion-padding-horizontal" style="width: 100%;"><ion-skeleton-text animated style="height: 40px; border-radius: 3px"></ion-skeleton-text></p>
+      <p class="ion-no-margin" style="width: 100%;"><ion-skeleton-text animated style="height: 3px; border-radius: 3px"></ion-skeleton-text></p>
+      <ion-item class="ion-no-margin" lines="none">
+        <ion-skeleton-text animated style="width: 100px; height: 16px"></ion-skeleton-text>
+      </ion-item>
+      <p class="ion-no-margin" style="width: 100%;"><ion-skeleton-text animated style="height: 3px; border-radius: 3px"></ion-skeleton-text></p>
+      <ion-item class="ion-no-margin itemMinH20" lines="none">
+        <ion-skeleton-text animated style="width: 100px; height: 16px"></ion-skeleton-text>
+      </ion-item>
+      <ion-item class="ion-no-margin itemMinH25" lines="none" *ngFor="let i of [1,2]">
+        <ion-label class="ion-no-margin">
+          <ion-skeleton-text slot="start" animated style="height: 25px; width: 30%;"></ion-skeleton-text>
+          <p class="ion-no-margin" style="width: 100%; padding-right: 16px"><ion-skeleton-text animated style="height: 25px; border-radius: 3px; "></ion-skeleton-text></p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ng-container>
+  <ng-container *ngIf="data">
+    <ng-container [ngSwitch]="currentSegment">
+      <ng-template ngSwitchDefault>
+        <!--Project-->
+        <div class="ion-padding-horizontal">
+          <ion-item class="ion-no-padding" lines="none">
+            <ion-label>
+              <h2 class="ion-text-wrap">{{data.scope.title}}&nbsp;
+                <ion-icon name="ios-more" class="ion-float-end ion-align-self-center" color="primary" *ngIf="data.scope.can_edit_title && userType !== _UT.SUPPLIER" (click)="presentAlert('change_title')"></ion-icon>
+              </h2>
+              <p class="_black">Address: <span class="ion-float-end ion-text-wrap">
+                {{data.scope.address}}
+              </span></p>
+              <p class="_black">Status: <span class="ion-float-end">
+                {{data.scope.status}}&nbsp;
+                <ion-icon name="ios-more" class="ion-float-end ion-align-self-center" color="primary" *ngIf="data.scope.can_edit_status && userType === _UT.AGENT" (click)="presentAlert('timeframe')"></ion-icon>
+              </span></p>
+              <p class="_dark-tint">Start Date: <span class="ion-float-end">
+              {{data.scope.start_date}}&nbsp;
+                <ion-icon name="ios-more" class="ion-float-end ion-align-self-center" color="primary" *ngIf="data.scope.can_edit_start_date && userType !== _UT.SUPPLIER" (click)="presentAlert('start_date')"></ion-icon>
+            </span></p>
+            </ion-label>
+          </ion-item>
+          <ion-item class="ion-no-padding itemMinH20" lines="none">
+            <ion-label class="ion-no-margin smallText ion-text-capitalize _medium">
+              #{{data.scope.quote_number}}
+            </ion-label>
+            <ion-label class="ion-no-margin smallText _medium">
+              Quoted on {{data.scope.quote_date}}
+            </ion-label>
+          </ion-item>
+          <ion-item class="itemMinH35 ion-no-padding" lines="none" *ngIf="data.scope.is_reminder">
+            <ion-button slot="start" fill="clear" class="ion-text-capitalize ion-no-margin noPaddingStart" (click)="btn('reminder')">
+              <ion-icon [src]="helper._IMG.SET_ALARM"></ion-icon>&nbsp;Reminder
+            </ion-button>
+          </ion-item>
+          <ion-button color="primary" expand="full" class="ion-text-capitalize ion-no-margin" *ngIf="data?.status == MQS.Completed && !data?.reviewData?.review && !showReviewForm" (click)="showReviewForm = !showReviewForm">
+            <ion-icon name="md-add-circle-outline"></ion-icon>
+            <ion-label>Add Review</ion-label>
+          </ion-button>
+
+          <div *ngIf="showReviewForm && !data?.reviewData?.review" class="ReviewWrap">
+            <form [formGroup]="saveReviewForm" (keydown.enter)="$event.preventDefault()" (ngSubmit)="SaveReviewSubmit()">
+              <ion-button fill="clear" (click)="clickonStar(i)" class="ion-no-padding RatingStars" *ngFor="let star of starArr; let i = index">
+                <ion-icon [name]="star.iconName" [class]="star.className" ></ion-icon>
+              </ion-button>
+              <ion-item class="ion-no-padding" lines="none">
+                <ion-textarea autocapitalize="sentences" rows="3" class="myBorderInput" (keyup.enter)="SaveReviewSubmit()" formControlName="review"></ion-textarea>
+              </ion-item>
+              <app-error [errorMsg]="vCheck1('review','_INPUT')"></app-error>
+              <ion-button type="button" class="ion-no-margin noBorderRadius" expand="full" color="primary" (click)="SaveReviewSubmit()">Save Review</ion-button>
+            </form>
+          </div>
+          <ion-item class="ion-no-padding" lines="none" *ngIf="data?.reviewData?.review">
+            <ion-avatar>
+              <img alt="user" [src]="helper._IMG.DEFAULT_NO_IMG" [errorImage]="helper._IMG.DEFAULT_NO_IMG" [lazyLoad]="data.reviewData.client_avatar">
+            </ion-avatar>
+            <ion-label class="ion-no-margin itemMinH20">
+                <span class="ViewStars" *ngFor="let star of starArr; let i = index" >
+                  <ion-icon [name]="star.iconName" [class]="star.className" ></ion-icon>
+                </span>
+              <p>{{ data.reviewData.review }}</p>
+            </ion-label>
+          </ion-item>
+          <app-image-row class="uploaded-attachments" *ngIf="data?.project_img_details?.length" [filesItems]="data.project_img_details" imgKey="link" imgTitleKey="title"></app-image-row>
+          <ion-button fill="clear" expand="full" size="large" *ngIf="data.scope.uploads_enable" class="ion-text-capitalize ion-no-margin dottedBorder _medium smallText uploadBtn" (click)="btn('uploadPhotoDoc')">
+            <ion-icon [src]="helper._IMG.CLOUD_BACKUP_UP_ARROW"></ion-icon>&nbsp;Upload Photos & Documents
+          </ion-button>
+        </div>
+        <ion-progress-bar mode="ios"></ion-progress-bar>
+        <div class="ion-padding-horizontal">
+          <ion-item class="ion-no-padding" lines="full">
+            <ion-label class="ion-no-margin itemMinH20">
+              <h2>Quote Summary</h2>
+            </ion-label>
+            <ion-button *ngIf="userType === _UT.AGENT || userType === _UT.CLIENT || userType === _UT.HEAD_CONTRACTOR" size="small" slot="end" class="ion-text-capitalize ion-no-margin noShadowBtn" (click)="btn('addNewScope')"><ion-icon name="add-circle-outline"></ion-icon> Add New Scope</ion-button>
+          </ion-item>
+          <ng-container *ngFor="let sd of data.scopeDetails">
+            <ion-item class="ion-no-padding itemMinH30" lines="none">
+              <ion-label class="ion-no-margin">
+                <h2 [innerHTML]="sd.quote_title" class="_primary ion-text-wrap boldText"></h2>
+                <p class="_primary" *ngIf="userType !== _UT.CONTRACTOR">{{sd?.scope_price | currency:'USD':'symbol':'1.2-2'}}</p>
+              </ion-label>
+              <ion-button *ngIf="data.hide_edit_scope" fill="clear" class="ion-no-margin" slot="end" (click)="btn('editScope', sd?.id)"><ion-icon name="md-create"></ion-icon></ion-button>
+              <ion-button fill="clear" class="ion-no-margin" slot="end" (click)="btn('removeScope', sd?.id)"><ion-icon name="md-trash"></ion-icon></ion-button>
+            </ion-item>
+            <ion-list *ngIf="sd?.scopeData?.length || sd?.scopeData" class="ion-no-padding">
+              <ng-container *ngFor="let s of sd.scopeData">
+                <ng-container *ngIf="s.section_values">
+                  <ng-container [ngSwitch]="s.section_type">
+                    <ng-template ngSwitchDefault>
+                      <ion-item class="ion-no-padding" lines="full">
+                        <ion-label>
+                          <h5>{{s.section_title}}</h5>
+                          <ng-container *ngIf="_.isArray(s.section_values) && s.section_values.length">
+                            <ng-container *ngFor="let sData of s.section_values">
+                              <p>{{sData.name | viewIn : 'N/A'}} <ion-chip class="customChip halfOpacity" *ngIf="sData.value">{{sData.value}}</ion-chip></p>
+                              <p class="ion-text-wrap smallMarginBottom halfOpacity" *ngIf="sData.description">( {{sData.description}} )</p>
+                            </ng-container>
+                          </ng-container>
+                          <ng-container *ngIf="_.isObject(s.section_values) && s.section_values">
+                            <p>{{s.section_values.name}} <ion-chip class="customChip halfOpacity" *ngIf="s.section_values.value">{{s.section_values.value}}</ion-chip></p>
+                            <p class="ion-text-wrap smallMarginBottom halfOpacity" *ngIf="s.section_values.description">( {{s.section_values.description}} )</p>
+                          </ng-container>
+                        </ion-label>
+                      </ion-item>
+                    </ng-template>
+                    <ng-template [ngSwitchCase]="AFL.MOODS">
+                      <ion-item class="ion-no-padding" lines="full">
+                        <ion-label>
+                          <h5>{{s.section_title}}</h5>
+                          <ng-container *ngIf="!s?.section_values?.length">
+                            <p class="ion-text-wrap smallMarginBottom halfOpacity">{{s?.section_values | viewIn : 'N/A'}}</p>
+                          </ng-container>
+                          <ng-container *ngIf="s.section_values?.length">
+                            <p class="ion-text-wrap smallMarginBottom halfOpacity" *ngFor="let mv of s.section_values">{{mv | viewIn : 'N/A'}}</p>
+                          </ng-container>
+                        </ion-label>
+                      </ion-item>
+                    </ng-template>
+                    <ng-template [ngSwitchCase]="AFL.ADDITIONAL_NOTES">
+                      <ion-item class="ion-no-padding" lines="full">
+                        <ion-label>
+                          <h5>{{s.section_title}}</h5>
+                          <p class="ion-text-wrap smallMarginBottom halfOpacity">{{s.section_values.notes | viewIn : 'N/A'}}</p>
+                        </ion-label>
+                      </ion-item>
+                    </ng-template>
+                    <ng-template [ngSwitchCase]="AFL.WIDTH_AND_HEIGHT">
+                      <ion-item class="ion-no-padding" lines="full">
+                        <ion-label>
+                          <h5>{{s.section_title}}</h5>
+                          <p class="ion-float-left">{{s.section_values.length + 'x' + s.section_values.width}} - Area: <ion-chip class="customChip halfOpacity">{{s.section_values.wallarea | number:'1.0-2'}}m2</ion-chip></p>
+                        </ion-label>
+                      </ion-item>
+                    </ng-template>
+                    <ng-template [ngSwitchCase]="AFL.WIDTH_AND_LENGTH">
+                      <ion-item class="ion-no-padding" lines="full">
+                        <ion-label>
+                          <h5>{{s.section_title}}</h5>
+                          <p class="ion-float-left">{{s.section_values.width + 'x' + s.section_values.length}} - Area: <ion-chip class="customChip halfOpacity">{{s.section_values.floorarea | number:'1.0-2'}}m2</ion-chip></p>
+                        </ion-label>
+                      </ion-item>
+                    </ng-template>
+                    <ng-template [ngSwitchCase]="AFL.PRICE_AND_AREA">
+                      <ion-item class="ion-no-padding" lines="full">
+                        <ion-label>
+                          <h5>{{s.section_title}}</h5>
+                          <p class="ion-float-left">{{ '$'+ s.section_values.supply_price + 'x' + s.section_values.supply_area +'m2' }} - Supply Allowance: <ion-chip class="customChip halfOpacity">${{s.section_values.supply_total}} inc gst</ion-chip></p>
+                        </ion-label>
+                      </ion-item>
+                    </ng-template>
+                    <ng-template [ngSwitchCase]="AFL.LENGTH">
+                      <ion-item class="ion-no-padding" lines="full">
+                        <ion-label>
+                          <h5>{{s.section_title}}</h5>
+                          <p class="ion-float-left">{{s.section_values.length}}</p>
+                        </ion-label>
+                      </ion-item>
+                    </ng-template>
+                    <ng-template [ngSwitchCase]="AFL.AREA">
+
+                    </ng-template>
+                    <ng-template [ngSwitchCase]="AFL.HEIGHT">
+                      <ion-item class="ion-no-padding" lines="full">
+                        <ion-label>
+                          <h5>{{s.section_title}}</h5>
+                          <p class="ion-float-left">{{s.section_values.height}}</p>
+                        </ion-label>
+                      </ion-item>
+                    </ng-template>
+                    <ng-template [ngSwitchCase]="AFL.ROOM_SIZE">
+                      <ion-item class="ion-no-padding" lines="full">
+                        <ion-label>
+                          <h5>{{s.section_title}}</h5>
+                          <div>
+                            <p class="ion-float-left halfOpacity"><ion-chip class="customChip noMarginLeft">{{s.section_values.width + 'x' + s.section_values.length + 'x' + s.section_values.height}}</ion-chip></p>
+                            <p class="marginInStart4 ion-float-left">Floor Area: <ion-chip class="customChip halfOpacity">{{s.section_values.floorarea | number:'1.0-2'}} m2</ion-chip></p>
+                            <p class="marginInStart4 ion-float-left">Wall Area: <ion-chip class="customChip halfOpacity">{{s.section_values.wallarea | number:'1.0-2'}} m2</ion-chip></p>
+                          </div>
+                        </ion-label>
+                      </ion-item>
+                    </ng-template>
+                    <ng-template [ngSwitchCase]="AFL.DISPLAY_REPEATER">
+                      <ng-container *ngIf="s?.section_values?.length">
+                        <ion-item class="ion-no-padding" lines="full">
+                          <ion-label>
+                            <h5>{{s.section_title}}</h5>
+                            <ion-item class="ion-no-padding" lines="full" *ngFor="let dr of s.section_values">
+                              <ion-label class="ion-no-margin">
+                                <h5>{{_.isObject(dr?.customQuoteFieldTitle) ? dr?.customQuoteFieldTitle.customQuoteFieldTitle : dr?.customQuoteFieldTitle}}</h5>
+                                <p class="ion-text-wrap halfOpacity">{{(_.isObject(dr?.customQuoteFieldPrice) ? _.toNumber(dr?.customQuoteFieldPrice.customQuoteFieldPrice) : _.toNumber(dr?.customQuoteFieldPrice)) | viewIn:0 | currency:'USD':'symbol':'1.2-2' }}</p>
+                                <p class="ion-text-wrap halfOpacity">{{(_.isObject(dr?.customQuoteFieldDescription) ? dr?.customQuoteFieldDescription.customQuoteFieldDescription : dr?.customQuoteFieldDescription) | viewIn:'-' }}</p>
+                              </ion-label>
+                            </ion-item>
+                          </ion-label>
+                        </ion-item>
+                      </ng-container>
+                    </ng-template>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+            </ion-list>
+          </ng-container>
+        </div>
+      </ng-template>
+      <ng-template ngSwitchCase="Activity">
+       
+        <ion-list>
+          <ion-item class="itemMinH25" lines="none" *ngIf="userType !== _UT.CONTRACTOR && userType !== _UT.CLIENT">
+            <ion-button slot="start" fill="clear" class="ion-text-capitalize ion-no-margin noPaddingStart" (click)="OpenAddPeopleSelect()"><ion-icon name="add-circle-outline"></ion-icon> Add People
+            </ion-button>
+          </ion-item>
+          <ng-container *ngIf="data?.message?.length">
+            <div class="ion-padding-horizontal ion-padding-bottom">
+              <ng-container *ngFor="let comment of data?.message; let last = last">
+                <ion-item class="ion-no-margin ion-no-padding itemMinH20 comment-first-item" lines="none">
+                  <ion-avatar slot="start" class="small-avatar">
+                    <img alt="user" [src]="helper._IMG.DEFAULT_USER" [errorImage]="helper._IMG.DEFAULT_USER" [lazyLoad]="comment.profile_image">
+                  </ion-avatar>
+                  <ion-label class="ion-no-margin ion-align-self-center">
+                    <p class="boldText ion-align-self-center">{{comment.first_name}} {{comment.last_name}}</p>
+                  </ion-label>
+                  <ion-note slot="end" class="ion-align-self-center xSmallText">{{comment.date}}</ion-note>
+                </ion-item>
+                <ion-item class="ion-no-margin ion-no-padding itemMinH20 innerHtml-wrap" lines="none" *ngIf="comment?.message">
+                  <ion-label class="ion-no-margin ion-text-wrap smallText" [innerHTML]="comment.message">
+                    <!--<p class="ion-text-wrap">{{comment.message}}</p>-->
+                  </ion-label>
+                </ion-item>
+                <app-image-row class="uploaded-attachments" [filesItems]="comment?.attachment" imgKey="link"></app-image-row>
+                <ng-container *ngIf="comment?.reply_details?.length">
+                  <div class="ion-margin-start comment-reply">
+                    <ng-container *ngFor="let rep of comment.reply_details">
+                      <ion-item class="ion-no-margin ion-no-padding itemMinH20 comment-first-item" lines="none">
+                        <ion-avatar slot="start" class="small-avatar">
+                          <img alt="user" [src]="helper._IMG.DEFAULT_USER" [errorImage]="helper._IMG.DEFAULT_USER" [lazyLoad]="rep.profile_image">
+                        </ion-avatar>
+                        <ion-label class="ion-no-margin ion-align-self-center">
+                          <p class="boldText ion-align-self-center">{{rep.first_name}} {{rep.last_name}}</p>
+                        </ion-label>
+                        <ion-note slot="end" class="ion-align-self-center xSmallText">{{rep.date}}</ion-note>
+                      </ion-item>
+                      <ion-item class="ion-no-margin ion-no-padding itemMinH20 innerHtml-wrap innerHtml-smallText" lines="none" *ngIf="rep?.message">
+                        <ion-label class="ion-no-margin smallText ion-text-wrap" [innerHTML]="rep.message">
+                          <!--<p class="ion-text-wrap smallText">{{rep.message}}</p>-->
+                        </ion-label>
+                      </ion-item>
+                      <app-image-row class="uploaded-attachments" [filesItems]="rep?.attachment" imgKey="link"></app-image-row>
+                    </ng-container>
+                  </div>
+                </ng-container>
+                <!--<ion-item class="ion-no-margin ion-no-padding itemMinH20" [lines]="last ? 'none' : 'full'" *ngIf="!comment.showForm">
+                  <ion-button slot="start" fill="clear" class="ion-text-capitalize ion-no-margin" (click)="onReplyComment(comment)">
+                    <ion-icon name="ios-undo"></ion-icon>&nbsp;Reply
+                  </ion-button>
+                </ion-item>-->
+                <div  [ngClass]="!!vCheck('this_input','_INPUT', true) ? 'reply-div error-comment':'reply-div'" *ngIf="comment.showForm">
+                  <form [formGroup]="replyForm" (keydown.enter)="$event.preventDefault()">
+                    <app-image-row class="uploaded-attachments uploaded-attachments-comment" [filesItems]="tempFileArrReply" canDelete="true" (onClickTrigger)="onTempDeleteFile($event, true)"></app-image-row>
+                    <ion-item lines="none" class="ion-no-margin ion-no-padding">
+                      <ion-textarea autocapitalize="sentences"  class="ion-no-margin ion-no-padding reply_input" formControlName="this_input" placeholder="Reply here..."></ion-textarea>
+                      <ion-button fill="clear" slot="end" class="ion-no-margin myRippleBtn" (click)="addNewFile(true)" [disabled]="tempFileArrReply.length >= 5"><ion-icon name="md-images"></ion-icon></ion-button>
+                      <ion-button fill="clear" slot="end" class="ion-no-margin myRippleBtn" (click)="btn('addProjectReply', comment)"><ion-icon name="ios-send"></ion-icon></ion-button>
+                    </ion-item>
+                  </form>
+                </div>
+              </ng-container>
+            </div>
+          </ng-container>
+        </ion-list>
+
+        <ion-infinite-scroll threshold="-10" (ionInfinite)="doRefresh($event)">
+          <ion-infinite-scroll-content
+              loadingSpinner="dots">
+          </ion-infinite-scroll-content>
+        </ion-infinite-scroll>
+      </ng-template>
+      <ng-template ngSwitchCase="Schedule">
+        <ion-item lines="none">
+          <ion-button *ngIf="!data.is_client" slot="start" fill="clear" class="ion-text-capitalize noPaddingStart" (click)="btn('add_schedules')">
+            <ion-icon [name]="data?.schedules?.length ? 'md-calendar' :'md-add-circle-outline'"></ion-icon>{{ data?.schedules?.length ? 'Manage Schedules' : 'Add Schedule' }}
+          </ion-button>
+        </ion-item>
+        <div class="ion-padding-horizontal" *ngIf="data?.schedules?.length">
+          <ion-item class="ion-no-padding itemMinH20 schedulesListing" lines="none" *ngFor="let schData of data.schedules; let scIndex = index">
+            <ion-label [class]="schData.done?'schedulesLabel allMarked':'schedulesLabel'">
+              <h2 class="ion-text-wrap ion-text-capitalize"> {{schData.title}}</h2>
+              <ion-note class="smallText">{{schData.date_from}} - {{schData.date_to}}</ion-note>
+              <p class="_black ion-text-wrap">{{schData.description}}</p>
+              <ng-container *ngIf="schData?.tasks?.length">
+                <ion-item class="ion-no-padding itemMinH25" lines="none" *ngFor="let tt of schData.tasks">
+                  <ion-checkbox [disabled]="tt.is_disabled || tt.task_done" (click)="btn('markCompleteTaskDone', tt)" class="ion-no-margin marginInlineEnd16 iconSize" mode="md" slot="start" [checked]="tt.task_done"></ion-checkbox>
+                  <ion-label class="ion-no-margin fullOpacity">
+                    <p [class]="tt.task_done?'_medium fullOpacity ion-text-wrap linethroghTxt':'_medium fullOpacity ion-text-wrap'">{{ tt.title }}</p>
+                  </ion-label>
+                </ion-item>
+              </ng-container>
+              <app-image-row class="uploaded-attachments" [filesItems]="schData.photos" imgKey="image"></app-image-row>
+              <ion-button (click)="btn('uploadSchedule', (scIndex+1))" *ngIf="!data.is_client" fill="clear" expand="full" size="large" class="ion-text-capitalize ion-no-margin dottedBorder _medium smallText uploadBtn">
+                <ion-icon [src]="helper._IMG.CLOUD_BACKUP_UP_ARROW"></ion-icon>&nbsp;Upload Photos here
+              </ion-button>
+              <ion-button (click)="btn('markScheduleDone', (scIndex+1))" *ngIf="!schData.done" size="small" class="ion-text-capitalize noShadowBtn ion-no-margin"><ion-icon name="done-all"></ion-icon>&nbsp;Mark Done</ion-button>
+            </ion-label>
+          </ion-item>
+        </div>
+        <div class="ion-padding-horizontal noDataDiv" *ngIf="!data?.schedules?.length">
+          <ion-icon color="primary" [src]="helper._IMG.CALENDAR2" mode="ios"></ion-icon>
+          <p>Schedule to be confirmed.</p>
+        </div>
+      </ng-template>
+      <ng-template ngSwitchCase="Payments">
+        <ion-item lines="full" *ngIf="userType == _UT.AGENT || userType == _UT.CONTRACTOR">
+          <ion-button slot="start" class="ion-text-capitalize" (click)="btn('add_variations')">Other Payments </ion-button>
+        </ion-item>
+        <ng-container *ngIf="(userType == _UT.AGENT || userType == _UT.CONTRACTOR) && cPaymentTab === 'otherPaymentSubTab'">
+          <ng-container *ngIf="data?.project_variations?.length">
+            <ion-list class="ion-no-padding ion-padding-horizontal">
+              <ion-item class="ion-no-padding __white" *ngFor="let inv of data.project_variations; let indexInv = index;" [lines]="(inv?.adjustments?.length) ? 'none' : ''" [detail]="false">
+                <ion-label (click)="btn('InvoiceDetail', inv?.invoice_id, !!(inv?.invoice_id))">
+                  <p class="ion-text-wrap">{{inv.description}}</p>
+                  <ion-row class="smallText">
+                    <p class="ion-float-left marginInlineEnd16"><b>Total:</b> {{inv?.percent | viewIn:'0' | currency:'USD':'symbol':'1.2-2'}}</p>
+                    <p class="ion-float-left _medium">{{inv.title}}</p>
+                  </ion-row>
+                  <ion-row class="smallText">
+                    <ion-col class="ion-no-padding ion-align-self-center" size="5"><ion-text color="danger">{{inv?.due_date}}</ion-text></ion-col>
+                    <ion-col class="ion-no-padding ion-align-self-center ion-text-right" size="7">
+                      <ion-chip class="ion-no-margin ion-text-capitalize customChip xSmallText _white" [ngStyle]="{'background': 'var(--label-'+inv?.status_class+')'}">{{inv?.status}}</ion-chip>
+                    </ion-col>
+                  </ion-row>
+                </ion-label>
+                <ion-button class="marginInStart4 _primary fullOpacity" slot="end" fill="clear" [disabled]="inv?.done" (click)="btn('mark', {invoice_id: inv?.invoice_id, action: 'mark_as_done', milestone : (indexInv+1), type: 'variation'})">
+                  <ion-icon [name]="inv?.done ? 'md-checkmark-circle-outline' : 'md-checkmark'"></ion-icon>
+                </ion-button>
+                <ion-button class="marginInStart4 _primary" slot="end" fill="clear" [disabled]="inv?.paid" (click)="btn('mark', {invoice_id: inv?.invoice_id, action: 'mark_as_paid', milestone : (indexInv+1), type: 'variation'})" *ngIf="inv?.done">
+                  <ion-icon [name]="inv?.paid ? 'list-box' : 'md-checkmark'"></ion-icon>
+                </ion-button>
+              </ion-item>
+            </ion-list>
+          </ng-container>
+          <ng-container *ngIf="!data.project_variations.length">
+            <div class="noDataDiv">
+              <ion-icon color="primary" [src]="helper._IMG.ATM" mode="ios"></ion-icon>
+              <p>There are no variations yet.</p>
+            </div>
+          </ng-container>
+        </ng-container>
+        <ng-container *ngIf="userType !== _UT.CONTRACTOR && cPaymentTab === 'PaymentSubTab'">
+          <ng-container *ngIf="data?.payments?.details?.length">
+            <ion-list class="ion-no-padding ion-padding-horizontal">
+              <ion-item class="itemMinH35 ion-no-padding" lines="none">
+                <ion-label class="ion-no-margin ion-no-padding">Payments</ion-label>
+                <p slot="end" class="ion-no-margin _primary"> {{data?.payments?.total | currency:'USD':'symbol':'1.2-2'}}</p>
+              </ion-item>
+              <ion-item-sliding *ngFor="let inv of data.payments.details; let indexInv = index;">
+                <ion-item class="ion-no-padding __white" [lines]="(inv?.adjustments?.length) ? 'none' : ''" detail="false"> <!--  *ngIf="inv?.view_invoice" -->
+                  <ion-label (click)="btn('InvoiceDetail', inv?.invoice_id, inv?.view_invoice)">
+                    <p class="ion-text-wrap">{{inv.description}}</p>
+                    <ion-row class="smallText">
+                      <p class="ion-float-left marginInlineEnd16"><b>Total:</b> {{inv?.price | viewIn:'0' | currency:'USD':'symbol':'1.2-2'}}<span class="halfOpacity" *ngIf="inv.percent">(% {{inv.percent}} of total)</span></p>
+                      <p class="ion-float-left _medium">{{inv.title}}</p>
+                    </ion-row>
+                    <ion-row class="smallText">
+                      <ion-col class="ion-no-padding ion-align-self-center" size="5"><ion-text color="danger">{{inv?.due_date}}</ion-text></ion-col>
+                      <ion-col class="ion-no-padding ion-align-self-center ion-text-right" size="7">
+                        <ion-chip class="ion-no-margin ion-text-capitalize customChip xSmallText _white" [ngStyle]="{'background': 'var(--label-'+inv?.status_class+')'}">{{inv?.status}}</ion-chip>
+                      </ion-col>
+                    </ion-row>
+                  </ion-label>
+                  <ion-button *ngIf="inv?.view_invoice" class="marginInStart4" slot="end" fill="clear" (click)="btn('InvoiceDetail', inv?.invoice_id, inv?.view_invoice)">
+                    <ion-icon name="ios-more"></ion-icon>
+                  </ion-button>
+                  <ion-button *ngIf="inv.can_adjust_milestone" class="marginInStart4 _medium" slot="end" fill="clear" (click)="btn('addMileStone', {data: inv, index: (indexInv+1)})">
+                    <ion-icon name="ios-settings"></ion-icon>
+                  </ion-button>
+                </ion-item>
+                <ng-container *ngIf="inv?.adjustments?.length">
+                  <ion-item class="ion-no-padding itemMinH20" lines="none">
+                    <ion-button no-padding no-margin text-capitalize size="small" fill="clear" slot="start" (click)="helper.toggleShowHide(inv.adjustments, inv.adjustments)">{{ 'Adjust Milestone' }}
+                      <ion-icon [name]="(inv.adjustments.isOpen)?'ios-arrow-up':'ios-arrow-down'"></ion-icon>
+                    </ion-button>
+                  </ion-item>
+                  <div *ngIf="inv.adjustments.isOpen">
+                    <ion-item *ngFor="let adj of inv.adjustments; let indexAdj = index;" class="ion-no-padding __white-tintE">
+                      <ion-icon class="font13 borderRadius50 __white smallLeftMargin" name="help"></ion-icon>
+                      <ion-label>
+                        <p class="ion-text-wrap smallLeftMargin">{{adj.description}}</p>
+                        <p>
+                          <span class="ion-float-left smallMargin"><b>Total:</b> {{adj?.price | viewIn:'0' | currency:'USD':'symbol':'1.2-2'}}<span class="halfOpacity" *ngIf="adj.percent">(% {{adj.percent}} of total)</span></span>
+                          <span class="ion-float-left smallMargin _medium ion-align-self-center">{{adj.title}}</span>
+                          <ion-button class="ion-float-right marginInStart4 _medium" fill="clear" (click)="btn('removeMilestone', {data: adj, index: (indexInv+1), indexAR: (indexAdj+1)})">
+                            <ion-icon name="ios-close"></ion-icon>
+                          </ion-button>
+                        </p>
+                      </ion-label>
+                    </ion-item>
+                  </div>
+                </ng-container>
+                <ion-item-options side="start" *ngIf="inv?.can_mark_as_done || inv?.can_mark_as_paid">
+                  <ion-item-option class="_bg_primary" *ngIf="inv?.can_mark_as_done" (click)="btn('mark', {invoice_id: inv?.invoice_id, action: 'mark_as_done', milestone : (indexInv+1) })">Mark Done</ion-item-option>
+                  <ion-item-option class="_bg_primary" *ngIf="inv?.can_mark_as_paid" (click)="btn('mark', {invoice_id: inv?.invoice_id, action: 'mark_as_paid', milestone : (indexInv+1)})">Mark Paid</ion-item-option>
+                </ion-item-options>
+                <!--<ion-item-options side="end" *ngIf="inv?.can_send_invoice">
+                  <ion-item-option class="_bg_success" *ngIf="inv?.can_send_invoice" (click)="btn('mark', {invoice_id: inv?.invoice_id, action: 'remind', milestone : (indexInv+1) })">Send Invoice</ion-item-option>
+                </ion-item-options>-->
+              </ion-item-sliding>
+            </ion-list>
+          </ng-container>
+          <ng-container *ngIf="!data.payments.details.length">
+            <div class="noDataDiv">
+              <ion-icon color="primary" [src]="helper._IMG.ATM" mode="ios"></ion-icon>
+              <p>There are no invoices yet.</p>
+            </div>
+          </ng-container>
+        </ng-container>
+      </ng-template>
+    </ng-container>
+  </ng-container>
+</ion-content>
+<ion-footer *ngIf="data && ((data?.status && data.scope.can_edit_status && userType === _UT.AGENT) || (data?.is_secure_booking && userType === _UT.AGENT) || (data?.is_complete && data.scope.can_edit_status && userType === _UT.AGENT) || (currentSegment === 'Activity'))" [ngClass]="(currentSegment === 'Activity') ? 'comment-footer':''">
+  <ion-toolbar class="ion-no-margin comment-toolbar" *ngIf="currentSegment === 'Activity'">
+    <form [formGroup]="commentForm" (keydown.enter)="$event.preventDefault()">
+      <app-image-row class="uploaded-attachments uploaded-attachments-comment" [filesItems]="tempFileArr" canDelete="true" (onClickTrigger)="onTempDeleteFile($event)"></app-image-row>
+    <ion-item lines="none" [ngClass]="!!vCheck('this_input','_INPUT') ? 'ion-no-margin ion-no-padding error-comment':'ion-no-margin ion-no-padding'">
+      <ion-textarea autocapitalize="sentences" rows="2" class="ion-no-margin ion-no-padding" formControlName="this_input" placeholder="Share something here..." (ionFocus)="scrollBottom(300)"></ion-textarea>
+      <ion-button fill="clear" slot="end" class="ion-no-margin myRippleBtn" (click)="addNewFile()" [disabled]="tempFileArr.length >= 5"><ion-icon name="md-images"></ion-icon></ion-button>
+      <ion-button fill="clear" slot="end" class="ion-no-margin myRippleBtn" (click)="btn('addProjectComment')"><ion-icon name="ios-send"></ion-icon></ion-button>
+    </ion-item>
+    </form>
+  </ion-toolbar>
+  <ion-tab-bar slot="bottom" *ngIf="((data?.status && data.scope.can_edit_status && userType === _UT.AGENT) || (data?.is_secure_booking && userType === _UT.AGENT) || (data?.is_complete && data.scope.can_edit_status && userType === _UT.AGENT)) && !showTeams">
+    <ion-tab-button layout="icon-top" class="btnSecondary" *ngIf="data?.status && data.scope.can_edit_status && userType === _UT.AGENT" (click)="presentAlert('change_status')">
+      <ion-icon name="md-create"></ion-icon>
+      <ion-label>{{data?.status_string}}</ion-label>
+    </ion-tab-button>
+    <ion-tab-button layout="icon-top" class="btnSuccess" *ngIf="data?.is_secure_booking  && userType === _UT.AGENT" (click)="btn('secureBooking', {name : 'project_accept', value: 'secure_booking'})">
+      <ion-icon [src]="helper._IMG.SHIELD2"></ion-icon>
+      <ion-label>Secure Booking</ion-label>
+    </ion-tab-button>
+    <ion-tab-button layout="icon-top" class="btnSuccess" *ngIf="data?.is_complete && data.scope.can_edit_status && userType === _UT.AGENT" (click)="btn('complete', {name : 'change_status', value: 'completed'})">
+      <ion-icon [src]="helper._IMG.CHECK_CIRCLE"></ion-icon>
+      <ion-label>Complete</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-footer>
