@@ -1,3 +1,3 @@
 # HouseDesignApp
-Angular (ionic)
+Java & Angular (ionic)
 #
